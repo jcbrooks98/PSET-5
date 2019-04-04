@@ -1,1 +1,11 @@
+copy / paste below this line ----   
+  
+  
+  
+```{r}
+library(MASS)
+library(biotools)
+library(DiscriMiner)
+library(klaR)
+```
 
