@@ -1,7 +1,6 @@
-copy / paste below this line ----   
-  
-  
-  
+copy / paste this line and below ----   
+
+####Load Packages
 ```{r}
 library(MASS)
 library(biotools)
@@ -9,3 +8,36 @@ library(DiscriMiner)
 library(klaR)
 ```
 
+####Define Data
+```{r}
+#read data
+PD <- read.csv("data.csv", header=TRUE, stringsAsFactors = FALSE)
+
+#get subset of data that is complete for relevant variables
+PD[,c("X", "ID", "Name", "Nationality", "Club", "PreferredFoot", "BodyType", "Position", "GKDiving", "GKHandling", "GKKicking", "GKPositioning", "GKReflexes"
+)] <- list(NULL)
+
+
+#isolate only complete cases
+PD <- PD[complete.cases(PD),]
+
+#need to fix a data issue
+PD[,9] <- as.numeric(PD[,9])
+
+names(PD)
+```
+
+
+#make an interaction plots
+#this makes the plots
+```{r}
+
+as.factor(PD$InternationalReputation)
+as.factor(PD$Age)
+
+par(mfrow=c(2,2))
+
+interaction.plot(PD$InternationalReputation,PD$Age,PD$Overall,lwd=3,col=c("red","blue","black"),xlab="International Reputation",main="Interaction Plot for Overall")
+interaction.plot(PD$InternationalReputation,PD$Age,PD$Wage,lwd=3,col=c("red","blue","black"),xlab="International Reputation",main="Interaction Plot for Wage")
+interaction.plot(PD$InternationalReputation,PD$Age,PD$Potential,lwd=3,col=c("red","blue","black"),xlab="International Reputation",main="Interaction Plot for Potential")
+```
