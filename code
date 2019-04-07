@@ -1,5 +1,4 @@
 copy / paste this line and below ----   
-
 ####Load Packages
 ```{r}
 library(MASS)
@@ -7,6 +6,8 @@ library(biotools)
 library(DiscriMiner)
 library(klaR)
 ```
+
+1. Look at interaction plots and discuss what you see. 
 
 ####Define Data
 ```{r}
@@ -40,4 +41,30 @@ par(mfrow=c(2,2))
 interaction.plot(PD$InternationalReputation,PD$Age,PD$Overall,lwd=3,col=c("red","blue","black"),xlab="International Reputation",main="Interaction Plot for Overall")
 interaction.plot(PD$InternationalReputation,PD$Age,PD$Wage,lwd=3,col=c("red","blue","black"),xlab="International Reputation",main="Interaction Plot for Wage")
 interaction.plot(PD$InternationalReputation,PD$Age,PD$Potential,lwd=3,col=c("red","blue","black"),xlab="International Reputation",main="Interaction Plot for Potential")
+```
+
+2. Run MANOVA for these two categorical factors. Discuss your results, both univariate and multivariate.
+
+#fit linear model
+```{r}
+mod1 <- manova(as.matrix(PD[,])) ~ PD$InternationalReputation + PD$Age + PD$InternationalReputation*PD$Age 
+```
+
+#get univariate results
+```{r}
+summary.aov(mod1)
+```
+
+#get multivariate results
+```{r}
+summary.manova(mod1)
+summary.manova(mod1, test="Wilks")
+```
+
+3. Perform (multivariate) contrasts to compare levels of a particular factor or combinations of factors. Discuss your results **CONSIDER IT MAJOR EXTRA CREDIT IF YOU GET THIS TO WORK IN R**
+
+4. Fit a model that includes the covariates as predictors
+#remove missing values
+```{r}
+
 ```
