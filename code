@@ -1,4 +1,5 @@
 copy / paste this line and below ----   
+
 ####Load Packages
 ```{r}
 library(MASS)
@@ -43,11 +44,11 @@ interaction.plot(PD$InternationalReputation,PD$Age,PD$Wage,lwd=3,col=c("red","bl
 interaction.plot(PD$InternationalReputation,PD$Age,PD$Potential,lwd=3,col=c("red","blue","black"),xlab="International Reputation",main="Interaction Plot for Potential")
 ```
 
-2. Run MANOVA for these two categorical factors. Discuss your results, both univariate and multivariate.
+2. Run Two-Way MANOVA for these two categorical factors. Discuss your results, both univariate and multivariate.
 
 #fit linear model
 ```{r}
-mod1 <- manova(as.matrix(PD[,])) ~ PD$InternationalReputation + PD$Age + PD$InternationalReputation*PD$Age 
+mod1 <- manova(as.matrix(PD[,])~ PD$InternationalReputation + PD$Age + PD$InternationalReputation*PD$Age) 
 ```
 
 #get univariate results
@@ -63,8 +64,24 @@ summary.manova(mod1, test="Wilks")
 
 3. Perform (multivariate) contrasts to compare levels of a particular factor or combinations of factors. Discuss your results **CONSIDER IT MAJOR EXTRA CREDIT IF YOU GET THIS TO WORK IN R**
 
-4. Fit a model that includes the covariates as predictors
+4. If applicable, add a continuous variable to your model and fit as a multiple-response generalized linear model. Before you fit the model, make some plots to see if there are linear relationships between your covariates and your responses. 
+
 #remove missing values
+```{r}
+PD2 <- PD[complete.cases(PD[,],)]
+```
+
+#fit linear model
+```{r}
+mod1 <- lm(as.matrix(PD2[,])~ PD2$InternationalReputation + PD2$Age +  
+```
+
+#get univariate results
+```{r}
+summary.lm(mod1)
+```
+
+5. Check model assumptions by making a chi-square quantile plot of the residuals. Modify your model as appropriate based on your findings.
 ```{r}
 
 ```
