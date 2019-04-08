@@ -3,52 +3,63 @@ copy / paste this line and below ----
 ####Load Packages
 ```{r}
 library(MASS)
-library(biotools)
 library(DiscriMiner)
 library(klaR)
 ```
-
-1. Look at interaction plots and discuss what you see. 
 
 ####Define Data
 ```{r}
 #read data
 PD <- read.csv("data.csv", header=TRUE, stringsAsFactors = FALSE)
 
-#get subset of data that is complete for relevant variables
-PD[,c("X", "ID", "Name", "Nationality", "Club", "PreferredFoot", "BodyType", "Position", "GKDiving", "GKHandling", "GKKicking", "GKPositioning", "GKReflexes"
-)] <- list(NULL)
-
-
 #isolate only complete cases
 PD <- PD[complete.cases(PD),]
 
-#need to fix a data issue
-PD[,9] <- as.numeric(PD[,9])
+#choose only the data that will be useful and relevant for this MANOVA
+data <- PD[,c("BodyType","PreferredFoot","BallControl","HeadingAccuracy","CM","ST","Overall")]
 
-names(PD)
+#there are a few players who, oddly, have their own names as their body type. we need to remove these players, and instead keep only the three body types below. subsetting and binding surely isn't the ideal way to do this, but i think it works fine.
+data1 <- subset(data, BodyType == "Normal")
+data2 <- subset(data, BodyType == "Stocky")
+data3 <- subset(data, BodyType == "Lean")
+
+newdata <- rbind(data1, data2, data3)
 ```
 
+
+
+####1. Look at interaction plots and discuss what you see. 
 
 #make an interaction plots
-#this makes the plots
 ```{r}
 
-as.factor(PD$InternationalReputation)
-as.factor(PD$Age)
+#par(mfrow=c(2,2))
 
-par(mfrow=c(2,2))
+interaction.plot(newdata$BodyType,newdata$PreferredFoot,newdata$Overall,lwd=3,col=c("red","blue","black"),trace.label = "Preferred Foot",xlab="Body Type",ylab="Mean of Overall",main="Interaction Plot for Overall Rating", legend=FALSE)
+legend("topleft", c("Left","Right"),bty="n",lty=c(2,1),lwd=3,col=c("red","blue"), title="Preferred Foot",inset = 0, cex=.8,y.intersp
+=.7, horiz = TRUE)
 
-interaction.plot(PD$InternationalReputation,PD$Age,PD$Overall,lwd=3,col=c("red","blue","black"),xlab="International Reputation",main="Interaction Plot for Overall")
-interaction.plot(PD$InternationalReputation,PD$Age,PD$Wage,lwd=3,col=c("red","blue","black"),xlab="International Reputation",main="Interaction Plot for Wage")
-interaction.plot(PD$InternationalReputation,PD$Age,PD$Potential,lwd=3,col=c("red","blue","black"),xlab="International Reputation",main="Interaction Plot for Potential")
+interaction.plot(newdata$BodyType,newdata$PreferredFoot,newdata$BallControl,lwd=3,col=c("red","blue","black"),trace.label="Preferred Foot",xlab="Body Type",ylab="Mean of Ball Control",main="Interaction Plot for Ball Control Rating",legend=FALSE)
+legend("topleft", c("Left","Right"),bty="n",lty=c(2,1),lwd=3,col=c("red","blue"), title="Preferred Foot",inset = 0, cex=.8,y.intersp
+=.7, horiz = TRUE)
+
+interaction.plot(newdata$BodyType,newdata$PreferredFoot,newdata$ST,lwd=3,col=c("red","blue","black"),trace.label="Preferred Foot",xlab="Body Type",ylab="Mean of ST",main="Interaction Plot for Striking Skill",legend=FALSE)
+legend("topleft", c("Left","Right"),bty="n",lty=c(2,1),lwd=3,col=c("red","blue"), title="Preferred Foot",inset = 0, cex=.8,y.intersp
+=.7, horiz = TRUE)
 ```
 
-2. Run Two-Way MANOVA for these two categorical factors. Discuss your results, both univariate and multivariate.
+*These interaction plots are very interesting.* 
+
+*Firstly, we must be sure to address differences in the data. There are only 4000 left-footed observations, while there are 12116 right-footed players. Both are sizable samples, but the left-footed sample is nevertheless one-third as big. In a similar vein, 1004 players are listed as "Stocky", 5969 as "Lean", and the remaining 9143 as "Normal". Again, however, the group memberships are fairly large, and we remain comfortable using MANOVA in our analysis.*  
+
+*None of the three plots is parallel. In all three, left and right footed players seem to be affected in differing amounts by changes in body type. Multivariate means for stocky left and right footed players seem particularly different. We hope to generate some significant findings with MANOVA.*  
+
+
+####2. Run Two-Way MANOVA for these two categorical factors. Discuss your results, both univariate and multivariate.
 
 #fit linear model
 ```{r}
-mod1 <- manova(as.matrix(PD[,])~ PD$InternationalReputation + PD$Age + PD$InternationalReputation*PD$Age) 
+mod1 <- manova(as.matrix(newdata[,3:7]) ~ newdata$BodyType + newdata$PreferredFoot + newdata$BodyType*newdata$PreferredFoot) 
 ```
 
 #get univariate results
