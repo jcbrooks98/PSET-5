@@ -1,5 +1,16 @@
 copy / paste this line and below ----   
 
+---
+title: "Homework 5 MANOVA"
+author: "Neehaar Gandhi, David Liu, Josh Brooks"
+date: "4/7/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
 ####Load Packages
 ```{r}
 library(MASS)
@@ -82,6 +93,15 @@ summary.manova(mod1, test="Wilks")
 
 4. If applicable, add a continuous variable to your model and fit as a multiple-response generalized linear model. Before you fit the model, make some plots to see if there are linear relationships between your covariates and your responses. 
 
+#plot to see whether there exist linear relationships between covariates and your reponses
+```{r}
+#THIS IS PROVING PROBLEMATIC 
+
+plot(complete.cases(newdata$BodyType), complete.cases(newdata$CM))
+
+plot(complete.cases(newdata$PreferredFoot), complete.cases(newdata$HeadingAccuracy))
+```
+
 #fit linear model
 ```{r}
 #NEEHAAR EDIT: ADDED IN CM AND HEADING ACCURACY COVARIATES AS PREDICTORS OF OVERALL RATING, BALL CONTROL, AND STRIKING ABILITY 
@@ -90,8 +110,10 @@ mod2 <- lm(as.matrix(newdata[,c(3,6:7)]) ~ newdata$BodyType*newdata$PreferredFoo
 
 #get univariate results
 ```{r}
-summary.lm(mod2)
+summary.aov(mod2)
 ```
+*The univariate results show that 
+
 
 5. Check model assumptions by making a chi-square quantile plot of the residuals. Modify your model as appropriate based on your findings.
 
