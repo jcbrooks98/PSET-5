@@ -78,14 +78,14 @@ summary.manova(mod1, test="Wilks")
 *The two-way MANOVA shows significant multivariate effects for both independent variables. The Pillai's Trace values and all quite small, and the Wilks' Lambda values are all quite large. We cannot reject the null hypothesis for the interaction term, due to its large p-value.*
 
 
-3. Perform (multivariate) contrasts to compare levels of a particular factor or combinations of factors. Discuss your results **CONSIDER IT MAJOR EXTRA CREDIT IF YOU GET THIS TO WORK IN R**
+3. Perform (multivariate) contrasts to compare levels of a particular factor or combinations of factors. Discuss your results **CONSIDER IT MAJOR EXTRA CREDIT IF YOU GET THIS TO WORK IN R, OTHERWISE WE NEED TO DO UNIVARIATE CONTRASTS**
 
 4. If applicable, add a continuous variable to your model and fit as a multiple-response generalized linear model. Before you fit the model, make some plots to see if there are linear relationships between your covariates and your responses. 
 
 #fit linear model
 ```{r}
-#NOTE FOR NEEHAAR/DAVID: code below is not complete at all
-mod2 <- lm(as.matrix(PD2[,])~ PD2$InternationalReputation + PD2$Age +  
+#NEEHAAR EDIT: ADDED IN CM AND HEADING ACCURACY COVARIATES AS PREDICTORS OF OVERALL RATING, BALL CONTROL, AND STRIKING ABILITY 
+mod2 <- lm(as.matrix(newdata[,c(3,6:7)]) ~ newdata$BodyType*newdata$PreferredFoot + newdata$CM + newdata$HeadingAccuracy)
 ```
 
 #get univariate results
