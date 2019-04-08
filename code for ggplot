@@ -1,0 +1,11 @@
+PD <- read.csv("data.csv", header=TRUE, stringsAsFactors = FALSE)
+
+library(ggplot2)
+library(dplyr)
+library(tidyverse)
+
+PD %>%
+  gather(key="key",value="value") %>% 
+  ggplot(aes(x=value))+
+  geom_density()+
+  facet_wrap(vars(key),scales="free")
