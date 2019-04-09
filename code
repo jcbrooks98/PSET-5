@@ -25,7 +25,7 @@ PD <- read.csv("data.csv", header=TRUE, stringsAsFactors = FALSE)
 PD <- PD[complete.cases(PD),]
 
 #choose only the data that will be useful and relevant for this MANOVA
-data <- PD[,c("BodyType","PreferredFoot","BallControl","HeadingAccuracy","CM","ST","Overall")]
+data <- PD[,c("BodyType","PreferredFoot","BallControl","HeadingAccuracy","CM","ST","Overall", "W", "Potential", "CF", "Reactions", "Weight")]
 
 #there are a few players who, oddly, have their own names as their body type. we need to remove these players, and instead keep only the three body types below. subsetting and binding surely isn't the ideal way to do this, but i think it works fine.
 data1 <- subset(data, BodyType == "Normal")
@@ -107,7 +107,7 @@ plot(newdata$HeadingAccuracy, newdata$ST, main = 'ST ~ HeadingAccuracy')
 
 #fit linear model
 ```{r}
-#NEEHAAR EDIT: ADDED IN CM AND HEADING ACCURACY COVARIATES AS PREDICTORS OF OVERALL RATING, BALL CONTROL, AND STRIKING ABILITY 
+#ADDED IN CM AND HEADING ACCURACY COVARIATES AS PREDICTORS OF OVERALL RATING, BALL CONTROL, AND STRIKING ABILITY 
 mod2 <- lm(as.matrix(newdata[,c(3,6:7)]) ~ newdata$BodyType*newdata$PreferredFoot + newdata$CM + newdata$HeadingAccuracy)
 ```
 
@@ -126,7 +126,12 @@ CSQPlot(mod1$residuals, label="MANOVA Residuals")
 #maybe this should be changed to the GLM residuals instead of MANOVA? possibly just add GLM results?
 CSQPlot(mod2$residuals, label="MANOVA Residuals")
 ```
-*The residuals look close to normal, but certainly not perfectly close. I DONT KNOW HOW TO MAKE THE MODEL BETTER IN LIGHT OF THIS.*
+*The GLM looks close to normal, but certainly not perfectly close. We added more continuous variables to the GLM in a new model to see if this brought us closer to multivariate normal.*
+
+```{r}
+mod3 <- lm(as.matrix(newdata[,c(3,6:7)]) ~ newdata$BodyType*newdata$PreferredFoot + newdata$CM + newdata$HeadingAccuracy + newdata$W + newdata$Potential + newdata$Reactions + newdata$Weight)
+CSQPlot(mod3$residuals, label="MANOVA Residuals (Refitted)")
+```
 
 6. BONUS: use some sort of multivariate correction procedure to modify your p-values as appropriate
 
