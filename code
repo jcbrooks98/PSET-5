@@ -95,8 +95,8 @@ summary.manova(mod1, test="Wilks")
 #plot to see whether there exist linear relationships between covariates and your reponses
 ```{r}
 #THIS IS PROVING PROBLEMATIC 
-
-plot(complete.cases(newdata$PreferredFoot), complete.cases(newdata$HeadingAccuracy))
+plot(newdata$CM, newdata$Overall, main = 'Overall ~ CM')
+plot(newdata$HeadingAccuracy, newdata$Overall, main = 'Overall ~ HeadingAccuracy')
 ```
 
 #fit linear model
