@@ -50,7 +50,6 @@ proc glm data=ohiocrime;
 class RACE EDUCATION;
 model SUMMERJOBS=RACE EDUCATION RACE*EDUCATION / solution;
 manova h=RACE EDUCATION RACE*EDUCATION;
-OUTPUT OUT=OUTSTAT RESIDUAL=RESIDUALA RESIDUALB;
 run;  
 
 PROC SORT DATA=ohiocrime; BY RACE ; RUN;
@@ -77,10 +76,24 @@ RUN;
 
 PROC GLM DATA=ohiocrime ORDER=DATA;
  CLASS TRTCOMB;
- MODEL SUMMERJOBS = TRTCOMB / SOLUTION;
- CONTRAST 'High school grad vs non-high school grad' TRTCOMB
-     3 3 -1 -1 -1 -1 -1 -1 3 3 -1 -1 -1 -1 -1 -1;
+ MODEL SUMMERJOBS FAMSUPPORT= TRTCOMB / SOLUTION;
+ CONTRAST 'white non-college grad vs black college grads' TRTCOMB
+     0 0 0 0 0 0 3 3 -1 -1 -1 -1 -1 -1 0 0;
+ CONTRAST 'white non-high school grad vs black high school grad' TRTCOMB
+     0 0 -1 -1 -1 -1 -1 -1 3 3 0 0 0 0 0 0;     
  MANOVA H=TRTCOMB;
+RUN;
+
+DATA PVALUES;
+   INPUT RAW_P;
+   DATALINES;
+	0.1453
+	0.0577
+	;
+RUN;
+
+PROC MULTTEST PDATA=PVALUES
+   BONFERRONI SIDAK STEPBON STEPSID HOC;
 RUN;
 
 PROC SGPLOT DATA=ohiocrime;
