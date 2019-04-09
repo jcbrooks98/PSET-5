@@ -88,14 +88,19 @@ summary.manova(mod1, test="Wilks")
 
 3. Perform (multivariate) contrasts to compare levels of a particular factor or combinations of factors. Discuss your results **CONSIDER IT MAJOR EXTRA CREDIT IF YOU GET THIS TO WORK IN R, OTHERWISE WE NEED TO DO UNIVARIATE CONTRASTS**
 ```{r}
-summary(mod1)
+summary(lm(newdata$Overall ~ newdata$BodyType, data=newdata))
+summary(lm(newdata$Overall ~ newdata$PreferredFoot, data=newdata))
+summary(lm(newdata$ST ~ newdata$BodyType, data=newdata))
+summary(lm(newdata$ST ~ newdata$PreferredFoot, data=newdata))
+summary(lm(newdata$BallControl ~ newdata$BodyType, data=newdata))
+summary(lm(newdata$BallControl ~ newdata$PreferredFoot, data=newdata))
 ```
+*As per the canvas announcement, we are unable to do multivariate contrasts in r, and thus we instead conducted univariate contrasts*
 
 4. If applicable, add a continuous variable to your model and fit as a multiple-response generalized linear model. Before you fit the model, make some plots to see if there are linear relationships between your covariates and your responses. 
 
 #plot to see whether there exist linear relationships between covariates and your reponses
 ```{r}
-#HELP
 plot(newdata$CM, newdata$Overall, main = 'Overall ~ CM')
 plot(newdata$HeadingAccuracy, newdata$Overall, main = 'Overall ~ HeadingAccuracy')
 plot(newdata$CM, newdata$BallControl, main = 'BallControl ~ CM')
