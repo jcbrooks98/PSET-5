@@ -94,7 +94,7 @@ summary.manova(mod1, test="Wilks")
 
 #plot to see whether there exist linear relationships between covariates and your reponses
 ```{r}
-#THIS IS PROVING PROBLEMATIC 
+#HELP
 plot(newdata$CM, newdata$Overall, main = 'Overall ~ CM')
 plot(newdata$HeadingAccuracy, newdata$Overall, main = 'Overall ~ HeadingAccuracy')
 ```
@@ -107,9 +107,9 @@ mod2 <- lm(as.matrix(newdata[,c(3,6:7)]) ~ newdata$BodyType*newdata$PreferredFoo
 
 #get univariate results
 ```{r}
-summary.lm(mod2)
+summary(mod2)
 ```
-*The univariate results show that the overall model is statistically significant, thus the beta coeffecients are not equal to zero (i.e. there exists a relationship between BallControl, ST, and Overall and CM, HeadingAccuracy, and the interaction of BodyType and PreferredFoot)*
+*This linear model shows that BodyTypeNormal, CM, HeadingAccuracy and the interaction of BodyTypeNormal and PreferredFootRight were statistically significant predictors for BallControl. The model shows that BodyTypeStocky, PreferredFootRight, CM, and HeadingAccuracy were statistically significant predictors for both ST and Overall. In addition, the interaction between BodyTypeNormal and PreferredFootRight was a statistically significant predictor for Overall rating.*
 
 
 5. Check model assumptions by making a chi-square quantile plot of the residuals. Modify your model as appropriate based on your findings.
