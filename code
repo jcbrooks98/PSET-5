@@ -1,4 +1,3 @@
-copy / paste this line and below ----   
 ---
 title: "Homework 5 MANOVA"
 author: "Neehaar Gandhi, David Liu, Josh Brooks"
@@ -38,7 +37,7 @@ newdata <- rbind(data1, data2, data3)
 
 
 
-####1. Look at interaction plots and discuss what you see. 
+1. Look at interaction plots and discuss what you see. 
 
 #make an interaction plots
 ```{r}
@@ -64,8 +63,7 @@ legend("topleft", c("Left","Right"),bty="n",lty=c(2,1),lwd=3,col=c("red","blue")
 
 *None of the three plots is parallel. In all three, left and right footed players seem to be affected in differing amounts by changes in body type. Multivariate means for stocky left and right footed players seem particularly different. We hope to generate some significant findings with MANOVA.*  
 
-
-####2. Run Two-Way MANOVA for these two categorical factors. Discuss your results, both univariate and multivariate.
+2. Run Two-Way MANOVA for these two categorical factors. Discuss your results, both univariate and multivariate.
 
 #fit linear model
 ```{r}
@@ -89,6 +87,9 @@ summary.manova(mod1, test="Wilks")
 
 
 3. Perform (multivariate) contrasts to compare levels of a particular factor or combinations of factors. Discuss your results **CONSIDER IT MAJOR EXTRA CREDIT IF YOU GET THIS TO WORK IN R, OTHERWISE WE NEED TO DO UNIVARIATE CONTRASTS**
+```{r}
+summary(mod1)
+```
 
 4. If applicable, add a continuous variable to your model and fit as a multiple-response generalized linear model. Before you fit the model, make some plots to see if there are linear relationships between your covariates and your responses. 
 
@@ -126,3 +127,16 @@ CSQPlot(mod1$residuals, label="MANOVA Residuals")
 CSQPlot(mod2$residuals, label="MANOVA Residuals")
 ```
 *The residuals look close to normal, but certainly not perfectly close. I DONT KNOW HOW TO MAKE THE MODEL BETTER IN LIGHT OF THIS.*
+
+6. BONUS: use some sort of multivariate correction procedure to modify your p-values as appropriate
+
+```{r}
+pvalsBC <- c(2e-16, 1.39e-08, 0.2316, 0.0962, 2e-16, 2e-16, 0.0164, 0.3354)
+pvalsST <- c(2e-16, 0.125438, 0.000182, 0.003338, 2e-16, 2e-16, 0.214271, 0.290798)
+pvalsOVERALL <- c(2e-16, 0.48392, 0.00106, 1.85e-06, 2e-16, 2e-16, 0.214271, 0.290798)
+p.adjust(pvalsBC, method = 'bonferroni', n=length(pvalsBC))
+p.adjust(pvalsST, method = 'bonferroni', n=length(pvalsST))
+p.adjust(pvalsOVERALL, method = 'bonferroni', n=length(pvalsOVERALL))
+```
+
+*Adjusted the p-values using bonferroni correction method*
