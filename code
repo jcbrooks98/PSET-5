@@ -139,4 +139,4 @@ p.adjust(pvalsST, method = 'bonferroni', n=length(pvalsST))
 p.adjust(pvalsOVERALL, method = 'bonferroni', n=length(pvalsOVERALL))
 ```
 
-*Adjusted the p-values using bonferroni correction method*
+*Created vectors using the p-values from the linear model used in number 4, proceeded to adjust the p-values using bonferroni correction method*
