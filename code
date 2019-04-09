@@ -97,7 +97,12 @@ summary.manova(mod1, test="Wilks")
 #HELP
 plot(newdata$CM, newdata$Overall, main = 'Overall ~ CM')
 plot(newdata$HeadingAccuracy, newdata$Overall, main = 'Overall ~ HeadingAccuracy')
+plot(newdata$CM, newdata$BallControl, main = 'BallControl ~ CM')
+plot(newdata$HeadingAccuracy, newdata$BallControl, main = 'BallControl ~ HeadingAccuracy')
+plot(newdata$CM, newdata$ST, main = 'ST ~ CM')
+plot(newdata$HeadingAccuracy, newdata$ST, main = 'ST ~ HeadingAccuracy')
 ```
+*CM has a linear positive relationship with Overall; HeadingAccuracy has a very weak positive linear relationship with Overall; CM has a positive linear relationship with BallControl; CM has a positive linear relationship with ST*
 
 #fit linear model
 ```{r}
