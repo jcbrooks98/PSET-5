@@ -10,6 +10,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
+library(psych)
+library(rela)
+```
+
+```{r}
 #read data
 PD <- read.csv("data.csv", header=TRUE, stringsAsFactors = FALSE)
 
@@ -35,8 +40,40 @@ library(rela)
 paf()
 ```
 
-4. Use Principle Components (or appropriate option in Factor Analysis) to decide on a number of latent factors. You can use Scree Plot, eigenvalue>1, or parallel analysis.
+4. Use Principle Components (or appropriate option in Factor Analysis) to decide on a number of latent factors. You can use Scree Plot, eigenvalue>1, or parallel analysis. 
+
 ```{r}
+fact3 <- fa(data, nfactors=3, rotate="varimax", SMC=FALSE, fm="pa")
+fact3
+```
+
+
+Loading plot for first two factors.
+
+```{r}
+plot(fact3$loadings, pch=18, col='red')
+abline(h=0)
+abline(v=0)
+text(fact3$loadings, labels=names(data),cex=0.8)
+```
+
+
+Correlation Matix Analyses
+
+```{r}
+#get reproduced correlation matrix
+repro3 <- fact3$loadings%*%t(fact3$loadings)
+#residual correlation matrix
+resid3 <- cor(data)-repro3
+round(resid3,2)
+
+#get root-mean squared residuals - again, in output above
+len <- length(resid3[upper.tri(resid3)])
+RMSR3 <- sqrt(sum(resid3[upper.tri(resid3)]^2)/len)
+RMSR3
+
+#get proportion of residuals greater than 0.05 in absolute value
+sum(rep(1,len)[abs(resid3[upper.tri(resid3)])>0.05])/len
 
 ```
 
