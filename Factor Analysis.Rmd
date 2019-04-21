@@ -1,0 +1,21 @@
+---
+title: "Factor Analysis"
+author: "Neehaar Gandhi, David Liu, Josh Brooks"
+date: "4/21/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#read data
+PD <- read.csv("data.csv", header=TRUE, stringsAsFactors = FALSE)
+
+#isolate only complete cases
+PD <- PD[complete.cases(PD),]
+
+#choose a subset of the data that 
+data <- PD[,c(4,6,9,16,17,18,19,29,30,31)]
+```
