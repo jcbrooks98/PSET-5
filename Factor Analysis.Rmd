@@ -18,4 +18,13 @@ PD <- PD[complete.cases(PD),]
 
 #choose a subset of the data that 
 data <- PD[,c(4,6,9,16,17,18,19,29,30,31)]
+data[,5] <- as.numeric(data[,5])
+```
+
+1. Look through indicators (questions). Think about which indicators might be related through latent factors.
+
+2. Compute the correlation matrix between all indicators (you may want to do this in batches). Comment on relationships you do/do not observe.
+```{r}
+data1 <- data[,1:length(data)]
+cor(data1)
 ```
