@@ -1,0 +1,16 @@
+
+```{r}
+library(psych)
+library(rela)
+```
+
+```{r}
+#read data
+PD <- read.csv("data.csv", header=TRUE, stringsAsFactors = FALSE)
+
+#isolate only complete cases
+PD <- PD[complete.cases(PD),]
+
+#choose a subset of the data that 
+data <- PD[,c(4,6,9,16,17,18,19,29,30,31)]
+```
