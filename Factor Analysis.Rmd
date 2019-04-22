@@ -101,6 +101,44 @@ sum(rep(1,len)[abs(resid3[upper.tri(resid3)])>0.05])/len
 
 ```
 
+#### Factor Analysis using PAF with Varimax Rotation
+
+```{r}
+#this uses the fa() function in the psych package.  Note that this fails with only 2 factors
+fact2 <- fa(data, nfactors=3, rotate="varimax", fm="pa")
+fact2
+```
+
+
+Loading plot for first two factors
+
+```{r}
+plot(fact2$loadings, pch=18, col='red')
+abline(h=0)
+abline(v=0)
+text(fact2$loadings, labels=names(data),cex=0.8)
+```
+
+
+Correlation matrix analysis
+
+```{r}
+#get reproduced correlation matrix
+repro2 <- fact2$loadings%*%t(fact2$loadings)
+#residual correlation matrix
+resid2 <- cor(data)-repro2
+round(resid2,2)
+
+#get root-mean squared residuals - already provided in output actually
+len <- length(resid2[upper.tri(resid2)])
+RMSR2 <- sqrt(sum(resid2[upper.tri(resid2)]^2)/len)
+RMSR2
+
+#get proportion of residuals greater than 0.05 in absolute value
+sum(rep(1,len)[abs(resid2[upper.tri(resid2)])>0.05])/len
+
+```
+
 6. Once you've chosen an extraction method, try a varimax and/or a quartimax rotation. Pick one of these rotations and discuss the interpretation of the final factors. Make one or more loading plots as appropriate.
 
 ```{r}
