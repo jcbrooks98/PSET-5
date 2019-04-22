@@ -39,7 +39,8 @@ cor(data1)
 3. Compute KMO or other measure (i.e. just look at matrix produced above) to comment on suitability of data for factor analysis.
 ```{r}
 library(rela)
-paf()
+datamat <- data.matrix(data1)
+paf(datamat, eigcrit=1, convcrit=.001)
 ```
 
 4. Use Principle Components (or appropriate option in Factor Analysis) to decide on a number of latent factors. You can use Scree Plot, eigenvalue>1, or parallel analysis. 
