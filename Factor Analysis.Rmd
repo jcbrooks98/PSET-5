@@ -12,6 +12,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(psych)
 library(rela)
+library(corrplot)
+library(PerformanceAnalytics)
 ```
 
 ```{r}
@@ -27,24 +29,33 @@ PD <- PD[complete.cases(PD),]
 #data[,5] <- as.numeric(data[,5])
 #the above was our first attempt to choose good indicators. the second attempt, which is below, seemed more successful. 
 
-data <- PD[,c(29,30,31,32,33,37,38,39,40,47,49,56,57)]
+data <- PD[,c(29,30,31,32,33,37,38,39,40,47,49,55,56,57)]
 data
 ```
 
 1. Look through indicators (questions). Think about which indicators might be related through latent factors.
+*We chose the following skill 14 rating variables as indicators. Among this list are a number of traits that we suspect to be related to offensive position success, as well as a number of traits which we suspect to be related to defensive position success.*  
 
 2. Compute the correlation matrix between all indicators (you may want to do this in batches). Comment on relationships you do/do not observe.
 ```{r}
 data1 <- data[,1:length(data)]
 cor(data1)
+corrplot(cor(data1),method = "ellipse", order="hclust", tl.col = "black", tl.cex=.8)
+chart.Correlation(data1, histogram=TRUE, pch=19)
 ```
+*Our correlation matrix and its visual aids show that we have a number of predictors that are correlated in similar ways, suggesting the viability of finding some underlying factors affecting variation. Some correlation magnitudes are smaller, but many are somewhat large, between 0.6 and 0.9.*  
 
 3. Compute KMO or other measure (i.e. just look at matrix produced above) to comment on suitability of data for factor analysis.
 ```{r}
 library(rela)
 datamat <- data.matrix(data1)
-paf(datamat, eigcrit=1, convcrit=.001)
+#paf(datamat, eigcrit=1, convcrit=.001)
+output1 <- paf(datamat, eigcrit=1, convcrit=.001)
+print(output1$KMO)
 ```
+*The selected indicators give us a Kaiser-Meyer-Olkin output of 0.83571, which is well above the acceptable range, and verging on good -- "meritorious", according to Kaiser's rating scale. Generally speaking, this means that there is a relatively large degree of common variance among our variables, and thus our data are suitable enough for facter analysis.*  
+
+*We initially tried a different and less judiciously chosen set of predictors, which gave a KMO value of about 0.65. This number, while also probably acceptable for factora analysis, is on the low side. As such, we decided to choose a better sample.*  
 
 4. Use Principle Components (or appropriate option in Factor Analysis) to decide on a number of latent factors. You can use Scree Plot, eigenvalue>1, or parallel analysis. 
 
