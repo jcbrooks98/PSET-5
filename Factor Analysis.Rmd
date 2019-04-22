@@ -47,7 +47,6 @@ chart.Correlation(data1, histogram=TRUE, pch=19)
 
 3. Compute KMO or other measure (i.e. just look at matrix produced above) to comment on suitability of data for factor analysis.
 ```{r}
-library(rela)
 datamat <- data.matrix(data1)
 #paf(datamat, eigcrit=1, convcrit=.001)
 output1 <- paf(datamat, eigcrit=1, convcrit=.001)
@@ -56,7 +55,7 @@ summary(output1)
 ```
 *The selected indicators give us a Kaiser-Meyer-Olkin output of 0.83571, which is well above the acceptable range, and verging on good -- "meritorious", according to Kaiser's rating scale. Generally speaking, this means that there is a relatively large degree of common variance among our variables, and thus our data are suitable enough for facter analysis.*  
 
-*We initially tried a different and less judiciously chosen set of predictors, which gave a KMO value of about 0.65. This number, while also probably acceptable for factora analysis, is on the low side. As such, we decided to choose a better sample.*  
+*We initially tried a different and less judiciously chosen set of predictors, which gave a KMO value of about 0.65. This number, while also probably acceptable for factora analysis, is on the low side. As such, we decided to choose a better sample. The indicators we chose previously were columns 4, 6, 9, 16, 17, 18, 19, 29, 30, 31.*  
 
 4. Use Principle Components (or appropriate option in Factor Analysis) to decide on a number of latent factors. You can use Scree Plot, eigenvalue>1, or parallel analysis. 
 
@@ -78,27 +77,27 @@ plot(fit, type="lines", main="Scree Plot of FIFA Data",col="red",lwd=2,pch=19,ce
 
 5. Perform a series of factor analysies using orthogonal models. First, try at least two extration methods (choose from Principle Components, Principle Axis Factoring, Iterative Principle Components, Maximum Likelihood), Use some method for comparing extraction methods to choose a 'best' method (i.e. RMSR or # residuals greater than .05).
 
-#### Perform Factor Analysis using iterative PCA with Varimax Rotation
+#### Perform Factor Analysis using iterative PCA
 
 ```{r}
-fact3 <- fa(data, nfactors=3, rotate="varimax", SMC=FALSE, fm="pa")
-fact3
+fact_pca <- fa(data, nfactors=4, SMC=FALSE, fm="pa")
+fact_pca
 ```
 
-Loading plot for first two factors.
+Loading plot for first three factors.
 
 ```{r}
-plot(fact3$loadings, pch=18, col='red')
+plot(fact_pca$loadings, pch=18, col='red')
 abline(h=0)
 abline(v=0)
-text(fact3$loadings, labels=names(data),cex=0.8)
+text(fact_pca$loadings, labels=names(data),cex=0.8)
 ```
 
 Correlation Matix Analyses
 
 ```{r}
 #get reproduced correlation matrix
-repro3 <- fact3$loadings%*%t(fact3$loadings)
+repro3 <- fact_pca$loadings%*%t(fact_pca$loadings)
 #residual correlation matrix
 resid3 <- cor(data)-repro3
 round(resid3,2)
@@ -112,17 +111,87 @@ RMSR3
 sum(rep(1,len)[abs(resid3[upper.tri(resid3)])>0.05])/len
 
 ```
+#### Factor Analysis using Maximum Likelihood
+```{r}
+fact_ml <- fa(data, nfactors=4)
+fact_ml
+```
+Loading plot for first three factors
 
-#### Factor Analysis using PAF with Varimax Rotation
+```{r}
+plot(fact_ml$loadings, pch=18, col='red')
+abline(h=0)
+abline(v=0)
+text(fact_ml$loadings, labels=names(data),cex=0.8)
+```
+
+
+Correlation matrix analysis
+
+```{r}
+#get reproduced correlation matrix
+repro_ml <- fact_ml$loadings%*%t(fact_ml$loadings)
+#residual correlation matrix
+resid_ml <- cor(data)-repro_ml
+round(resid_ml,2)
+
+#get root-mean squared residuals - already provided in output actually
+len <- length(resid_ml[upper.tri(resid_ml)])
+RMSR_ml <- sqrt(sum(resid_ml[upper.tri(resid_ml)]^2)/len)
+RMSR_ml
+
+#get proportion of residuals greater than 0.05 in absolute value
+sum(rep(1,len)[abs(resid_ml[upper.tri(resid_ml)])>0.05])/len
+
+```
+#### Factor Analysis using PAF
 
 ```{r}
 #this uses the fa() function in the psych package.  Note that this fails with only 2 factors
-fact2 <- fa(data, nfactors=3, rotate="varimax", fm="pa")
+fact_paf <- fa(data, nfactors=4, fm="pa")
+fact_paf
+```
+
+
+Loading plot for first three factors
+
+```{r}
+plot(fact_paf$loadings, pch=18, col='red')
+abline(h=0)
+abline(v=0)
+text(fact_paf$loadings, labels=names(data),cex=0.8)
+```
+
+
+Correlation matrix analysis
+
+```{r}
+#get reproduced correlation matrix
+repro_paf <- fact_paf$loadings%*%t(fact_paf$loadings)
+#residual correlation matrix
+resid_paf <- cor(data)-repro_paf
+round(resid_paf,2)
+#get root-mean squared residuals - already provided in output actually
+len <- length(resid_paf[upper.tri(resid_paf)])
+RMSR_paf <- sqrt(sum(resid_paf[upper.tri(resid_paf)]^2)/len)
+RMSR_paf
+#get proportion of residuals greater than 0.05 in absolute value
+sum(rep(1,len)[abs(resid_paf[upper.tri(resid_paf)])>0.05])/len
+```
+
+
+6. Once you've chosen an extraction method, try a varimax and/or a quartimax rotation. Pick one of these rotations and discuss the interpretation of the final factors. Make one or more loading plots as appropriate.
+
+#### Factor Analysis using iterative PCA with Varimax Rotation
+
+```{r}
+#this uses the fa() function in the psych package.  Note that this fails with only 2 factors
+fact2 <- fa(data, nfactors=4, rotation="varimax", SMC=FALSE, fm="pa")
 fact2
 ```
 
 
-Loading plot for first two factors
+Loading plot for first three factors
 
 ```{r}
 plot(fact2$loadings, pch=18, col='red')
@@ -151,8 +220,37 @@ sum(rep(1,len)[abs(resid2[upper.tri(resid2)])>0.05])/len
 
 ```
 
-6. Once you've chosen an extraction method, try a varimax and/or a quartimax rotation. Pick one of these rotations and discuss the interpretation of the final factors. Make one or more loading plots as appropriate.
+#### Factor Analysis using PAF with Varimax Rotation
 
 ```{r}
+#this uses the fa() function in the psych package.  Note that this fails with only 2 factors
+fact_pafRot <- fa(data, nfactors=4, rotate="varimax", fm="pa")
+fact_pafRot
+```
 
+
+Loading plot for first two factors
+
+```{r}
+plot(fact_pafRot$loadings, pch=18, col='red')
+abline(h=0)
+abline(v=0)
+text(fact_pafRot$loadings, labels=names(data),cex=0.8)
+```
+
+
+Correlation matrix analysis
+
+```{r}
+#get reproduced correlation matrix
+repro_pafRot <- fact_pafRot$loadings%*%t(fact_pafRot$loadings)
+#residual correlation matrix
+resid_pafRot <- cor(data)-repro_pafRot
+round(resid_pafRot,2)
+#get root-mean squared residuals - already provided in output actually
+len <- length(resid_pafRot[upper.tri(resid_pafRot)])
+RMSR_pafRot <- sqrt(sum(resid_pafRot[upper.tri(resid_pafRot)]^2)/len)
+RMSR_pafRot
+#get proportion of residuals greater than 0.05 in absolute value
+sum(rep(1,len)[abs(resid_pafRot[upper.tri(resid_pafRot)])>0.05])/len
 ```
