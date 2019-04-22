@@ -28,6 +28,7 @@ PD <- PD[complete.cases(PD),]
 #the above was our first attempt to choose good indicators. the second attempt, which is below, seemed more successful. 
 
 data <- PD[,c(29,30,31,32,33,37,38,39,40,47,49,56,57)]
+data
 ```
 
 1. Look through indicators (questions). Think about which indicators might be related through latent factors.
@@ -48,10 +49,29 @@ paf(datamat, eigcrit=1, convcrit=.001)
 4. Use Principle Components (or appropriate option in Factor Analysis) to decide on a number of latent factors. You can use Scree Plot, eigenvalue>1, or parallel analysis. 
 
 ```{r}
+#principal components analysis
+#chose to do PCA on the covariance matrix because the variable scales are similar (they are 0-100)
+fit <- princomp(data, cor=FALSE)
+summary(fit)
+loadings(fit)
+
+#eigenvalue > 1
+print(summary(fit),digits=2,loadings=fit$loadings,cutoff=0)
+#all 13 components have a stdev and variance (eigenvalue) of greater than one, perhaps use a different metric to determine number of latent factors. 
+
+#scree plot
+plot(fit, type="lines", main="Scree Plot of FIFA Data",col="red",lwd=2,pch=19,cex=1.2)
+#seems to be an elbow at the 5th component
+```
+
+5. Perform a series of factor analysies using orthogonal models. First, try at least two extration methods (choose from Principle Components, Principle Axis Factoring, Iterative Principle Components, Maximum Likelihood), Use some method for comparing extraction methods to choose a 'best' method (i.e. RMSR or # residuals greater than .05).
+
+#### Perform Factor Analysis using iterative PCA with Varimax Rotation
+
+```{r}
 fact3 <- fa(data, nfactors=3, rotate="varimax", SMC=FALSE, fm="pa")
 fact3
 ```
-
 
 Loading plot for first two factors.
 
@@ -61,7 +81,6 @@ abline(h=0)
 abline(v=0)
 text(fact3$loadings, labels=names(data),cex=0.8)
 ```
-
 
 Correlation Matix Analyses
 
@@ -79,12 +98,6 @@ RMSR3
 
 #get proportion of residuals greater than 0.05 in absolute value
 sum(rep(1,len)[abs(resid3[upper.tri(resid3)])>0.05])/len
-
-```
-
-5. Perform a series of factor analysies using orthogonal models. First, try at least two extration methods (choose from Principle Components, Principle Axis Factoring, Iterative Principle Components, Maximum Likelihood), Use some method for comparing extraction methods to choose a 'best' method (i.e. RMSR or # residuals greater than .05).
-
-```{r}
 
 ```
 
