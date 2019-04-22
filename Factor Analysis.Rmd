@@ -21,11 +21,13 @@ PD <- read.csv("data.csv", header=TRUE, stringsAsFactors = FALSE)
 #isolate only complete cases
 PD <- PD[complete.cases(PD),]
 
-#choose a subset of the data that 
-data <- PD[,c(4,6,9,16,17,18,19,29,30,31)]
+#choose a subset of the data that makes sense  
 
-#data fix
-data[,5] <- as.numeric(data[,5])
+#data <- PD[,c(4,6,9,16,17,18,19,29,30,31)]
+#data[,5] <- as.numeric(data[,5])
+#the above was our first attempt to choose good indicators. the second attempt, which is below, seemed more successful. 
+
+data <- PD[,c(29,30,31,32,33,37,38,39,40,47,49,56,57)]
 ```
 
 1. Look through indicators (questions). Think about which indicators might be related through latent factors.
