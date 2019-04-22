@@ -23,6 +23,8 @@ PD <- PD[complete.cases(PD),]
 
 #choose a subset of the data that 
 data <- PD[,c(4,6,9,16,17,18,19,29,30,31)]
+
+#data fix
 data[,5] <- as.numeric(data[,5])
 ```
 
