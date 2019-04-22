@@ -82,4 +82,12 @@ sum(rep(1,len)[abs(resid3[upper.tri(resid3)])>0.05])/len
 
 5. Perform a series of factor analysies using orthogonal models. First, try at least two extration methods (choose from Principle Components, Principle Axis Factoring, Iterative Principle Components, Maximum Likelihood), Use some method for comparing extraction methods to choose a 'best' method (i.e. RMSR or # residuals greater than .05).
 
+```{r}
+
+```
+
 6. Once you've chosen an extraction method, try a varimax and/or a quartimax rotation. Pick one of these rotations and discuss the interpretation of the final factors. Make one or more loading plots as appropriate.
+
+```{r}
+
+```
