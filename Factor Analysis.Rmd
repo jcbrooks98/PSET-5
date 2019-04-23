@@ -74,7 +74,7 @@ plot(fit, type="lines", main="Scree Plot of FIFA Data",col="red",lwd=2,pch=19,ce
 #seems to be an elbow at the 4th or 5th component
 ```
 
-5. Perform a series of factor analysies using orthogonal models. First, try at least two extration methods (choose from Principle Components, Principle Axis Factoring, Iterative Principle Components, Maximum Likelihood), Use some method for comparing extraction methods to choose a 'best' method (i.e. RMSR or # residuals greater than .05).
+5. Perform a series of factor analysies using orthogonal models. First, try at least two extraction methods (choose from Principle Components, Principle Axis Factoring, Iterative Principle Components, Maximum Likelihood), Use some method for comparing extraction methods to choose a 'best' method (i.e. RMSR or # residuals greater than .05).
 
 #### Perform Factor Analysis using iterative PCA
 
@@ -92,7 +92,7 @@ abline(v=0)
 text(fact_pca$loadings, labels=names(data),cex=0.8)
 ```
 
-Correlation Matix Analyses
+Correlation Matrix Analyses
 
 ```{r}
 #get reproduced correlation matrix
