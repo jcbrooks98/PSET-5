@@ -184,6 +184,7 @@ sum(rep(1,len)[abs(resid_paf[upper.tri(resid_paf)])>0.05])/len
 
 
 #### Factor Analysis using iterative PCA with Varimax Rotation
+*Note: we chose to do this simply to explore how the rotation affected this particular extraction method, not because it was the best extraction method*
 ```{r}
 #this uses the fa() function in the psych package.  Note that this fails with only 2 factors
 fact2 <- fa(data, nfactors=4, rotation="varimax", SMC=FALSE, fm="pa")
@@ -218,6 +219,7 @@ sum(rep(1,len)[abs(resid2[upper.tri(resid2)])>0.05])/len
 
 
 #### Factor Analysis using PAF with Varimax Rotation
+*Note: we chose to do this simply to explore how the rotation affected this particular extraction method, not because it was the best extraction method*
 ```{r}
 #this uses the fa() function in the psych package.  Note that this fails with only 2 factors
 fact_pafRot <- fa(data, nfactors=4, rotate="varimax", fm="pa")
@@ -248,6 +250,7 @@ sum(rep(1,len)[abs(resid_pafRot[upper.tri(resid_pafRot)])>0.05])/len
 ```
 
 #### Factor Analysis using maximum likelihood with Varimax Rotation
+*Note: this was the best extraction method*
 ```{r}
 fact_mlRot <- fa(data, nfactors=4, rotation="varimax", fm="ml")
 fact_mlRot
