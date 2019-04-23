@@ -36,6 +36,7 @@ data
 1. Look through indicators (questions). Think about which indicators might be related through latent factors.
 *We chose the following skill 14 rating variables as indicators. Among this list are a number of traits that we suspect to be related to offensive position success, as well as a number of traits which we suspect to be related to defensive position success.*  
 
+
 2. Compute the correlation matrix between all indicators (you may want to do this in batches). Comment on relationships you do/do not observe.
 ```{r}
 data1 <- data[,1:length(data)]
@@ -44,6 +45,7 @@ corrplot(cor(data1),method = "ellipse", order="hclust", tl.col = "black", tl.cex
 chart.Correlation(data1, histogram=TRUE, pch=19)
 ```
 *Our correlation matrix and its visual aids show that we have a number of predictors that are correlated in similar ways, suggesting the viability of finding some underlying factors affecting variation. Some correlation magnitudes are smaller, but many are somewhat large, between 0.6 and 0.9.*  
+
 
 3. Compute KMO or other measure (i.e. just look at matrix produced above) to comment on suitability of data for factor analysis.
 ```{r}
@@ -57,8 +59,8 @@ summary(output1)
 
 *We initially tried a different and less judiciously chosen set of predictors, which gave a KMO value of about 0.65. This number, while also probably acceptable for factora analysis, is on the low side. As such, we decided to choose a better sample. The indicators we chose previously were columns 4, 6, 9, 16, 17, 18, 19, 29, 30, 31.*  
 
-4. Use Principle Components (or appropriate option in Factor Analysis) to decide on a number of latent factors. You can use Scree Plot, eigenvalue>1, or parallel analysis. 
 
+4. Use Principle Components (or appropriate option in Factor Analysis) to decide on a number of latent factors. You can use Scree Plot, eigenvalue>1, or parallel analysis. 
 ```{r}
 #principal components analysis
 #chose to do PCA on the covariance matrix because the variable scales are similar (they are 0-100)
@@ -68,24 +70,25 @@ loadings(fit)
 
 #eigenvalue > 1
 print(summary(fit),digits=2,loadings=fit$loadings,cutoff=0)
-#all 13 components have a stdev and variance (eigenvalue) of greater than one, perhaps use a different metric to determine number of latent factors. 
+#all 14 components have a stdev and variance (eigenvalue) of greater than one, perhaps use a different metric to determine number of latent factors. 
 
 #scree plot
 plot(fit, type="lines", main="Scree Plot of FIFA Data",col="red",lwd=2,pch=19,cex=1.2)
 #seems to be an elbow at the 5th component
 ```
+*We ran PCA using the covariance matrix because the scales of the variables were identical; all are ratings between 0 and 100. The PCA of our data, as most effectively represented by the scree plot, suggests that either three or four components would be the best choices. Thus, we will aim to use three latent factors in our factor analysis. The eigenvalues for all 14 compenents (indicators) are of a similar magnitude (larger than 1), so they do not prove a very useful tool for choosing a number of factors.*  
+
 
 5. Perform a series of factor analysies using orthogonal models. First, try at least two extraction methods (choose from Principle Components, Principle Axis Factoring, Iterative Principle Components, Maximum Likelihood), Use some method for comparing extraction methods to choose a 'best' method (i.e. RMSR or # residuals greater than .05).
 
-#### Perform Factor Analysis using iterative PCA
 
+#### Perform Factor Analysis using iterative PCA
 ```{r}
 fact_pca <- fa(data, nfactors=4, SMC=FALSE, fm="pa", rotation = 'NONE')
 fact_pca
 ```
 
 Loading plot for first three factors.
-
 ```{r}
 plot(fact_pca$loadings, pch=18, col='red')
 abline(h=0)
@@ -94,7 +97,6 @@ text(fact_pca$loadings, labels=names(data),cex=0.8)
 ```
 
 Correlation Matrix Analyses
-
 ```{r}
 #get reproduced correlation matrix
 repro3 <- fact_pca$loadings%*%t(fact_pca$loadings)
@@ -111,13 +113,15 @@ RMSR3
 sum(rep(1,len)[abs(resid3[upper.tri(resid3)])>0.05])/len
 
 ```
+
+
 #### Factor Analysis using Maximum Likelihood
 ```{r}
 fact_ml <- fa(data, nfactors=4, rotation = 'NONE')
 fact_ml
 ```
-Loading plot for first three factors
 
+Loading plot for first three factors
 ```{r}
 plot(fact_ml$loadings, pch=18, col='red')
 abline(h=0)
@@ -125,9 +129,7 @@ abline(v=0)
 text(fact_ml$loadings, labels=names(data),cex=0.8)
 ```
 
-
 Correlation matrix analysis
-
 ```{r}
 #get reproduced correlation matrix
 repro_ml <- fact_ml$loadings%*%t(fact_ml$loadings)
@@ -144,17 +146,16 @@ RMSR_ml
 sum(rep(1,len)[abs(resid_ml[upper.tri(resid_ml)])>0.05])/len
 
 ```
-#### Factor Analysis using PAF
 
+
+#### Factor Analysis using PAF
 ```{r}
 #this uses the fa() function in the psych package.  Note that this fails with only 2 factors
 fact_paf <- fa(data, nfactors=4, fm="pa", rotation = 'NONE')
 fact_paf
 ```
 
-
 Loading plot for first three factors
-
 ```{r}
 plot(fact_paf$loadings, pch=18, col='red')
 abline(h=0)
@@ -162,9 +163,7 @@ abline(v=0)
 text(fact_paf$loadings, labels=names(data),cex=0.8)
 ```
 
-
 Correlation matrix analysis
-
 ```{r}
 #get reproduced correlation matrix
 repro_paf <- fact_paf$loadings%*%t(fact_paf$loadings)
@@ -178,21 +177,20 @@ RMSR_paf
 #get proportion of residuals greater than 0.05 in absolute value
 sum(rep(1,len)[abs(resid_paf[upper.tri(resid_paf)])>0.05])/len
 ```
+*All three methods -- iterative PCA, maximum likelihood, and principal axis factoring -- provide strikingly similar results. We will test both iterative PCA and PAF with our rotations below. The loading plots look good for our analysis. As we can see, there is clearly a lot of variation explained by our two axis factors (the first two factors), but there also seems to be at least one more factor.The next step should provide some clarity.*
 
 
 6. Once you've chosen an extraction method, try a varimax and/or a quartimax rotation. Pick one of these rotations and discuss the interpretation of the final factors. Make one or more loading plots as appropriate.
 
-#### Factor Analysis using iterative PCA with Varimax Rotation
 
+#### Factor Analysis using iterative PCA with Varimax Rotation
 ```{r}
 #this uses the fa() function in the psych package.  Note that this fails with only 2 factors
 fact2 <- fa(data, nfactors=4, rotation="varimax", SMC=FALSE, fm="pa")
 fact2
 ```
 
-
 Loading plot for first three factors
-
 ```{r}
 plot(fact2$loadings, pch=18, col='red')
 abline(h=0)
@@ -200,9 +198,7 @@ abline(v=0)
 text(fact2$loadings, labels=names(data),cex=0.8)
 ```
 
-
 Correlation matrix analysis
-
 ```{r}
 #get reproduced correlation matrix
 repro2 <- fact2$loadings%*%t(fact2$loadings)
@@ -220,17 +216,15 @@ sum(rep(1,len)[abs(resid2[upper.tri(resid2)])>0.05])/len
 
 ```
 
-#### Factor Analysis using PAF with Varimax Rotation
 
+#### Factor Analysis using PAF with Varimax Rotation
 ```{r}
 #this uses the fa() function in the psych package.  Note that this fails with only 2 factors
 fact_pafRot <- fa(data, nfactors=4, rotate="varimax", fm="pa")
 fact_pafRot
 ```
 
-
 Loading plot for first two factors
-
 ```{r}
 plot(fact_pafRot$loadings, pch=18, col='red')
 abline(h=0)
@@ -238,9 +232,7 @@ abline(v=0)
 text(fact_pafRot$loadings, labels=names(data),cex=0.8)
 ```
 
-
 Correlation matrix analysis
-
 ```{r}
 #get reproduced correlation matrix
 repro_pafRot <- fact_pafRot$loadings%*%t(fact_pafRot$loadings)
@@ -254,3 +246,4 @@ RMSR_pafRot
 #get proportion of residuals greater than 0.05 in absolute value
 sum(rep(1,len)[abs(resid_pafRot[upper.tri(resid_pafRot)])>0.05])/len
 ```
+*Again the results, and their respective plots, for the varimax rotations for both extraction methods are almost identical to our initial results, obtained with no rotations.*
