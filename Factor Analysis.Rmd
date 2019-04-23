@@ -116,11 +116,11 @@ sum(rep(1,len)[abs(resid3[upper.tri(resid3)])>0.05])/len
 
 #### Factor Analysis using Maximum Likelihood
 ```{r}
-fact_ml <- fa(data, nfactors=4, rotation="none")
+fact_ml <- fa(data, nfactors=4, rotation="none", fm="ml")
 fact_ml
 ```
 
-Loading plot for first three factors
+Loading plot for first two factors
 ```{r}
 plot(fact_ml$loadings, pch=18, col='red')
 abline(h=0)
@@ -154,7 +154,7 @@ fact_paf <- fa(data, nfactors=4, rotation="none", fm="pa")
 fact_paf
 ```
 
-Loading plot for first three factors
+Loading plot for first two factors
 ```{r}
 plot(fact_paf$loadings, pch=18, col='red')
 abline(h=0)
@@ -244,4 +244,37 @@ RMSR_pafRot
 #get proportion of residuals greater than 0.05 in absolute value
 sum(rep(1,len)[abs(resid_pafRot[upper.tri(resid_pafRot)])>0.05])/len
 ```
+
+#### Factor Analysis using maximum likelihood with Varimax Rotation
+```{r}
+fact_mlRot <- fa(data, nfactors=4, rotation="varimax", fm="ml")
+fact_mlRot
+```
+
+Loading plot for first two factors
+```{r}
+plot(fact_mlRot$loadings, pch=18, col='red')
+abline(h=0)
+abline(v=0)
+text(fact_mlRot$loadings, labels=names(data),cex=0.8)
+```
+
+Correlation matrix analysis
+```{r}
+#get reproduced correlation matrix
+repro_mlRot <- fact_mlRot$loadings%*%t(fact_mlRot$loadings)
+#residual correlation matrix
+resid_mlRot <- cor(data)-repro_mlRot
+round(resid_mlRot,2)
+
+#get root-mean squared residuals - already provided in output actually
+len <- length(resid_mlRot[upper.tri(resid_mlRot)])
+RMSR_mlRot <- sqrt(sum(resid_mlRot[upper.tri(resid_mlRot)]^2)/len)
+RMSR_mlRot
+
+#get proportion of residuals greater than 0.05 in absolute value
+sum(rep(1,len)[abs(resid_mlRot[upper.tri(resid_mlRot)])>0.05])/len
+
+```
+
 *Again the results, and their respective plots, for the varimax rotations for both extraction methods are almost identical to our initial results, obtained with no rotations.*
