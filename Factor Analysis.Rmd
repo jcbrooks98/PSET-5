@@ -191,7 +191,7 @@ fact2 <- fa(data, nfactors=4, rotation="varimax", SMC=FALSE, fm="pa")
 fact2
 ```
 
-Loading plot for first three factors
+Loading plot for first two factors
 ```{r}
 plot(fact2$loadings, pch=18, col='red')
 abline(h=0)
