@@ -54,6 +54,7 @@ output1 <- paf(datamat, eigcrit=1, convcrit=.001)
 print(output1$KMO)
 summary(output1)
 ```
+
 *The selected indicators give us a Kaiser-Meyer-Olkin output of 0.83571, which is well above the acceptable range, and verging on good -- "meritorious", according to Kaiser's rating scale. Generally speaking, this means that there is a relatively large degree of common variance among our variables, and thus our data are adequate enough for facter analysis.*  
 
 *We initially tried a different and less judiciously chosen set of predictors, which gave a KMO value of about 0.65. This number, while also probably acceptable for factor analysis, is on the low side. As such, we decided to choose a better sample. The indicators we chose previously were columns 4, 6, 9, 16, 17, 18, 19, 29, 30, 31.*  
@@ -75,6 +76,7 @@ print(summary(fit),digits=2,loadings=fit$loadings,cutoff=0)
 plot(fit, type="lines", main="Scree Plot of FIFA Data",col="red",lwd=2,pch=19,cex=1.2)
 #seems to be an elbow at the 4th or 5th component
 ```
+
 *We ran PCA using the covariance matrix because the scales of the variables were identical; all are ratings between 0 and 100. The PCA of our data, as most effectively represented by the scree plot, suggests that either three or four components would be the best choices. Thus, we will aim to use three latent factors in our factor analysis. The eigenvalues for all 14 compenents (indicators) are of a similar magnitude (larger than 1), so they do not prove a very useful tool for choosing a number of factors.*  
 
 
@@ -116,7 +118,7 @@ sum(rep(1,len)[abs(resid3[upper.tri(resid3)])>0.05])/len
 
 #### Factor Analysis using Maximum Likelihood
 ```{r}
-fact_ml <- fa(data, nfactors=4, rotation="none")
+fact_ml <- factanal(data, factors=4, rotation="none")
 fact_ml
 ```
 
