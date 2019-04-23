@@ -47,7 +47,9 @@ cor(data1)
 corrplot(cor(data1),method = "ellipse", order="hclust", tl.col = "black", tl.cex=.8)
 chart.Correlation(data1, histogram=TRUE, pch=19)
 ```
-*Our correlation matrix and its visual aids show that we have a number of indicators that are correlated deeply, suggesting the viability of finding some underlying factors affecting variation. Some correlation magnitudes are smaller, but many are somewhat large, between 0.6 and 0.9.*  
+
+
+*Our correlation matrix and its visual aids show that we have a number of indicators that are correlated deeply, suggesting the viability of finding some underlying factors affecting variation. Some correlation magnitudes are smaller, but many are somewhat large, between 0.6 and 0.9. For instance, some of the larger correlations have to do with defensive ability such as marking and slide tackling. We also see some high correlations involving indicators that relate to skill. *  
 
 
 3. Compute KMO or other measure (i.e. just look at matrix produced above) to comment on suitability of data for factor analysis.
