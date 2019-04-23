@@ -227,7 +227,4 @@ sum(rep(1,len)[abs(resid_mlRot[upper.tri(resid_mlRot)])>0.05])/len
 
 ```
 
-*The first latent factor seems to be about defensive versus offensive abilities.
-The second latent factor has large loadings for midfield player skills, which we might think of as the median skills that do not demand extremes (heading, strength, tackling, marking).
-The third latent factor expresses variation on skills that are not related to athleticism — there are positive values for passing and finishing, but negative values for running and tackling. We can think of this factor as related to a player’s dependence on finesse. 
-The fourth latent factor explains variation based on how physical a player’s play style is.* 
+*The first latent factor seems to be about defensive versus offensive abilities. The second latent factor has large loadings for midfield player skills, which we might think of as the median skills that do not demand extremes (heading, strength, tackling, marking). The third latent factor expresses variation on skills that are not related to athleticism — there are positive values for passing and finishing, but negative values for running and tackling. We can think of this factor as related to a player’s dependence on finesse. The fourth latent factor explains variation based on how physical a player’s play style is.* 
