@@ -33,7 +33,7 @@ PD <- PD[complete.cases(PD),]
 
 #the above was our first attempt to choose good indicators. the second attempt, which is below, seemed more successful. 
 data <- PD[,c(29,30,31,32,33,37,38,39,40,47,49,55,56,57)]
-data
+head(data)
 ```
 
 1. Look through indicators (questions). Think about which indicators might be related through latent factors.
@@ -200,6 +200,13 @@ plot(fact_mlRot$loadings, pch=18, col='red')
 abline(h=0)
 abline(v=0)
 text(fact_mlRot$loadings, labels=names(data),cex=0.8)
+```
+Loading plot for last two factors
+```{r}
+plot(fact_mlRot$loadings[,3:4], pch=18, col='red')
+abline(h=0)
+abline(v=0)
+text(fact_mlRot$loadings[,3:4], labels=names(data),cex=0.8)
 ```
 
 Correlation matrix analysis
