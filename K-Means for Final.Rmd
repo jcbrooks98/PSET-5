@@ -19,6 +19,8 @@ library(cluster)
 library(ape)
 library(ggplot2)
 library(DBItest)
+library(tidyverse)  
+library(factoextra)
 ```
 
 ```{r}
@@ -29,10 +31,13 @@ PD <- read.csv("data.csv", header=TRUE, stringsAsFactors = FALSE)
 PD <- PD[complete.cases(PD),]
 
 rowNames <- PD[,1]
+PD[,c("Name")] <- list(NULL)
+
+PD <- scale(PD)
 
 ```
 
-#### run k-means
+#### run k-means with all players
 ```{r}
 km1 <- kmeans(PD,centers=5)
 
