@@ -70,17 +70,20 @@ table(PD$Club)
 # Plot to give a sense of the variance in number of players produced by different countries
 plot(table(PD$Nationality))
 
-# boxplots for select variables
-boxplotCols <- c(4, 6, 7, 9, 11, 13, 17:57)
+#summary histograms for all of the continuous variables using ggplot function
+PD[c(4, 6, 7, 9, 11, 12, 13, 16:57)] %>%
+  gather(key="key",value="value") %>% 
+  ggplot(aes(x=value))+
+  geom_density()+
+  facet_wrap(vars(key),scales="free")
+
+
+#boxplots for some of the variables that did not have histograms that resembled an approximately normal distribution
+boxplotCols <- c(9, 11, 13, 39, 4, 40, 57, 13)
 # boxplotCols <- c(4, 6, 8) # use this to get a sense of plots when u don't want to load all plots
 PDNames <- colnames(PD)
 for (col in boxplotCols){
   boxplot(PD[, col], main=PDNames[col])
-}
-
-# histograms
-for (col in boxplotCols){
-  hist(PD[, col], main=PDNames[col])
 }
 
 # Correlation matrix shown in latter part
