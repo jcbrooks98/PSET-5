@@ -64,6 +64,33 @@ The third group of predictors is smaller and generally less useful. It is made u
 ```
 [insert analysis here]
 
+```{r}
+summary(PD)
+head(PD)
+
+# Frequency Examinations for Categoricals
+table(PD$Nationality)
+table(PD$Club)
+
+# Plot to give a sense of the variance in number of players produced by different countries
+plot(table(PD$Nationality))
+
+# boxplots for select variables
+boxplotCols <- c(4, 6, 7, 9, 11, 13, 17:57)
+# boxplotCols <- c(4, 6, 8) # use this to get a sense of plots when u don't want to load all plots
+PDNames <- colnames(PD)
+for (col in boxplotCols){
+  boxplot(PD[, col], main=PDNames[col])
+}
+
+# histograms
+for (col in boxplotCols){
+  hist(PD[, col], main=PDNames[col])
+}
+
+# Correlation matrix shown in latter part
+```
+
 #Multivariate Analysis and Discussion of Results
 
 *Factor Analysis*
