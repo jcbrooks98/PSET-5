@@ -440,3 +440,8 @@ write.table(kclust.out, file="kmeans_out.csv", sep=",")
 clusplot(kdata, fit$cluster, shade=F, labels=2, lines=0, color=T, lty=4, cex.txt = .3, main='Principal Components plot showing K-means clusters')
 
 ```
+
+```{R}
+distance <- get_dist(SPDmid)
+fviz_dist(distance, gradient = list(low = "#00AFBB", mid = "white", high = "#FC4E07"))
+```
