@@ -64,10 +64,12 @@ head(data)
 
 ```{r}
 #compute the correlation matrix between all indicators
+data[,5] <- as.numeric(data[,5])
 data1 <- data[,1:length(data)]
-cor(data1)
 corrplot(cor(data1),method = "ellipse", order="hclust", tl.col = "black", tl.cex=.8)
 chart.Correlation(data1, histogram=TRUE, pch=19)
+
+#we should break these into bunches- simply way too many
 ```
 [comment on relationships that we do/don't observe]
 
