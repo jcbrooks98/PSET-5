@@ -22,6 +22,12 @@ Further, we seek to look for patterns of players within particular position grou
 Finally, we want to look at the interactions between FIFA players’ nationalities and their skills in various areas. In the international soccer community, it is very common to talk about geographic regions as very different. For instance, it has become accepted wisdom to say that Latin American teams play a more skillful, less team-oriented style, while European teams play with more precision and less individual skill. We hope to see whether the data bear this out. In this vein, our third question for analysis will be: *Do different country groups create players that are differently abled in particular facets of the game?* To test this we will use MANOVA and attempt to establish differences in ability means between various nationality groups.
 
 #Data
+```{r}
+PD <- read.csv("data.csv", header=TRUE, stringsAsFactors = FALSE)
+
+#isolate only complete cases
+PD <- PD[complete.cases(PD),]
+```
 The dataset is quite large, as a result of the game’s intention of accurately representing every male professional soccer player in the world. While the video game surely requires an even larger ocean of data to operate, we will concern ourselves only with the player rating data -- those data that describe the qualities of individual athletes and their particular traits and skills. 
 There are a few broad categories of data in the set. The first type of variable is made up of the information that describes a player and his location. These include physical traits like height and weight, as well as the club for which the player plays professionally, the country for which the player plays in international competition, the player’s wage per game-week, and the like. All of this information is taken directly from publicly available postings by the players’ clubs. Wage is rounded to the nearest thousand, which could change the data somewhat at lower numbers. 
 The second, and ultimately the most significant, type of variable in the set comprises ratings for various in-game skills and actions on a 100 point scale. The full list has more than thirty predictors, which will be detailed below. Among them are skilled related to playing offense, playing defense, passing, athleticism, and everyone else that one must do on a soccer field. Some examples are: “Ball Control” (ability to keep possession of the ball and place it in a favorable position for future actions), “Finishing” (generalized fast-twitch ability to accurately kick the ball into the goal after receiving a pass), “Marking” (ability to successfully keep with a player while playing defense, and prevent him from receiving the ball), and “Agility” (a general measure of ability to move quickly over short distances and control one’s body through space). 
@@ -33,6 +39,62 @@ The third group of predictors is smaller and generally less useful. It is made u
 #Descriptive plots, summary statistics
 
 #Multivariate Analysis and Discussion of Results
+
+*Factor Analysis*
+In conducting factor analysis for our data, we first had to determine the suitability by computing KMO (Kaiser-Meyer-Olkin). Further, a test such as Principal Component Analysis (PCA) must be conducted to determine a number of latent factors that we are looking for, and as such, we will compute PCA on the covariance matrix because the variable scales we utilized are similar (randing from 0-100). 
+The code has been muted for the sake of space in the final report.
+```{r, include=FALSE}
+#KMO
+datamat <- data.matrix(data1)
+output1 <- paf(datamat, eigcrit=1, convcrit=.001)
+print(output1$KMO)
+summary(output1)
+
+#Using PCA
+fit <- princomp(data, cor=FALSE)
+summary(fit)
+loadings(fit)
+
+#eigenvalue > 1
+print(summary(fit),digits=2,loadings=fit$loadings,cutoff=0)
+#all 14 components have a stdev and variance (eigenvalue) of greater than one, perhaps use a different metric to determine number of latent factors. 
+
+#scree plot
+plot(fit, type="lines", main="Scree Plot of FIFA Data",col="red",lwd=2,pch=19,cex=1.2)
+#seems to be an elbow at the 4th or 5th component
+```
+
+Below is the actual Factor Analysis Test
+```{r}
+fact_ml <- fa(data, nfactors=4, rotation="none", fm="ml")
+fact_ml
+```
+
+Loading plot for first two factors
+```{r}
+plot(fact_ml$loadings, pch=18, col='red')
+abline(h=0)
+abline(v=0)
+text(fact_ml$loadings, labels=names(data),cex=0.8)
+```
+
+Correlation matrix analysis
+```{r}
+#get reproduced correlation matrix
+repro_ml <- fact_ml$loadings%*%t(fact_ml$loadings)
+#residual correlation matrix
+resid_ml <- cor(data)-repro_ml
+round(resid_ml,2)
+
+#get root-mean squared residuals - already provided in output actually
+len <- length(resid_ml[upper.tri(resid_ml)])
+RMSR_ml <- sqrt(sum(resid_ml[upper.tri(resid_ml)]^2)/len)
+RMSR_ml
+
+#get proportion of residuals greater than 0.05 in absolute value
+sum(rep(1,len)[abs(resid_ml[upper.tri(resid_ml)])>0.05])/len
+
+```
 
 #Conclusions and Discussion
 
