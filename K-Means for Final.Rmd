@@ -46,7 +46,7 @@ SPD
 
 
 
-#get defensive subroup
+#get defensive subgroup
 PDdef <- PD2[ which(PD2$Position == "CB" | PD2$Position == "RB" | PD2$Position == "LB" | PD2$Position == "LCB" | PD2$Position == "RCB"), ]
 
 PDdef[,c("X", "ID", "Name", "Nationality", "Club", "PreferredFoot", "BodyType", "Position", "InternationalReputation", "WeakFoot", "SkillMoves")] <- list(NULL)
@@ -232,7 +232,7 @@ k.rand <- function(x){
 rand.mat <- matrix(0,n.lev,250)
 
 k.1 <- function(x) { 
-  for (i in 1:250) {
+  for (i in 1:3) {
     r.mat <- as.matrix(suppressWarnings(k.rand(kdata)))
     rand.mat[,i] <- r.mat}
   return(rand.mat)

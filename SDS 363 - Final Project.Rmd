@@ -22,7 +22,7 @@ Further, we seek to look for patterns of players within particular position grou
 Finally, we want to look at the interactions between FIFA players’ nationalities and their skills in various areas. In the international soccer community, it is very common to talk about geographic regions as very different. For instance, it has become accepted wisdom to say that Latin American teams play a more skillful, less team-oriented style, while European teams play with more precision and less individual skill. We hope to see whether the data bear this out. In this vein, our third question for analysis will be: *Do different country groups create players that are differently abled in particular facets of the game?* To test this we will use MANOVA and attempt to establish differences in ability means between various nationality groups.
 
 #Data
-```{r}
+```{r, include=FALSE}
 #include relevant libraries for project
 library(aplpack)
 library(fpc)
@@ -51,23 +51,53 @@ PD[,18] <- as.numeric(PD[,18])
 ```
 The dataset is quite large, as a result of the game’s intention of accurately representing every male professional soccer player in the world. While the video game surely requires an even larger ocean of data to operate, we will concern ourselves only with the player rating data -- those data that describe the qualities of individual athletes and their particular traits and skills. 
 There are a few broad categories of data in the set. The first type of variable is made up of the information that describes a player and his location. These include physical traits like height and weight, as well as the club for which the player plays professionally, the country for which the player plays in international competition, the player’s wage per game-week, and the like. All of this information is taken directly from publicly available postings by the players’ clubs. Wage is rounded to the nearest thousand, which could change the data somewhat at lower numbers. 
+
 The second, and ultimately the most significant, type of variable in the set comprises ratings for various in-game skills and actions on a 100 point scale. The full list has more than thirty predictors, which will be detailed below. Among them are skilled related to playing offense, playing defense, passing, athleticism, and everyone else that one must do on a soccer field. Some examples are: “Ball Control” (ability to keep possession of the ball and place it in a favorable position for future actions), “Finishing” (generalized fast-twitch ability to accurately kick the ball into the goal after receiving a pass), “Marking” (ability to successfully keep with a player while playing defense, and prevent him from receiving the ball), and “Agility” (a general measure of ability to move quickly over short distances and control one’s body through space). 
+
 These skill ratings are, of course, highly subjective. They do not appear out of thin air; they must be created and compiled by human raters. EA are upfront about their process. They delegate the much of the task of watching and evaluating to a network of over 9000 “data reviewers”, made up of professionals (coaches) and amateurs (qualified fans). The material from the reviewers comes to a group of a few-hundred editors, who compile the data into the rating categories listed below. With this in mind, we can think of these ratings as the results of a large survey, in which soccer fanatics are asked to watch a great deal of game film and give answers to questions about player ability. This is not exactly true -- EA’s producers and editors tweak the data as they see fit, and the sampling of data reviewers is surely not perfectly random -- but thinking of it this way provides a general picture.
+
 The third group of predictors is smaller and generally less useful. It is made up of semi-categorical predictors (categorical skill ratings with five levels). These include “Skill Moves” and “International Reputation”. We will largely ignore these in our analysis -- they are less about soccer, and more about game mechanics. Skill moves is a good example of this category. From 1 to 5, as players go to up higher thresholds of skill rating, they gain the ability to carry out particular in-game actions.
 
-[insert variables below]
-
 #Descriptive plots, summary statistics
+```{r}
+
+```
+[insert analysis here]
+
+```{r}
+summary(PD)
+head(PD)
+
+# Frequency Examinations for Categoricals
+table(PD$Nationality)
+table(PD$Club)
+
+# Plot to give a sense of the variance in number of players produced by different countries
+plot(table(PD$Nationality))
+
+# boxplots for select variables
+boxplotCols <- c(4, 6, 7, 9, 11, 13, 17:57)
+# boxplotCols <- c(4, 6, 8) # use this to get a sense of plots when u don't want to load all plots
+PDNames <- colnames(PD)
+for (col in boxplotCols){
+  boxplot(PD[, col], main=PDNames[col])
+}
+
+# histograms
+for (col in boxplotCols){
+  hist(PD[, col], main=PDNames[col])
+}
+
+# Correlation matrix shown in latter part
+```
 
 #Multivariate Analysis and Discussion of Results
 
 *Factor Analysis*
 In conducting factor analysis for our data, we first had to determine the suitability by computing KMO (Kaiser-Meyer-Olkin). Further, a test such as Principal Component Analysis (PCA) must be conducted to determine a number of latent factors that we are looking for, and as such, we will compute PCA on the covariance matrix because the variable scales we utilized are similar (ranging from 0-100). 
-The code has been muted for the sake of space in the final report.
 ```{r}
 #subset data that we will use for factor analysis
-data <- PD[,c(4, 6, 7, 9, 17, 18, 19:57)]
-head(data)
+data <- PD[,c(4, 6, 7, 9, 11, 12, 13, 16:57)]
 ```
 
 ```{r}
@@ -111,7 +141,8 @@ plot(fit, type="lines", main="Scree Plot of FIFA Data",col="red",lwd=2,pch=19,ce
 
 Below is the actual Factor Analysis Test
 ```{r}
-fact_ml <- fa(data, nfactors=4, rotation="none", fm="ml")
+#had to increase the lower bound from default 0.005 in order to allow the solution to converge 
+fact_ml <- factanal(data, factors=3, rotation="varimax", fm="ml", lower = 0.02)
 fact_ml
 ```
 
@@ -120,7 +151,7 @@ Loading plot for first two factors
 plot(fact_ml$loadings, pch=18, col='red')
 abline(h=0)
 abline(v=0)
-text(fact_ml$loadings, labels=names(data),cex=0.8)
+text(fact_ml$loadings, labels=names(whole),cex=0.8)
 ```
 
 Correlation matrix analysis
