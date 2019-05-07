@@ -27,11 +27,13 @@ library(factoextra)
 #read data
 PD <- read.csv("data.csv", header=TRUE, stringsAsFactors = FALSE)
 
-#isolate only complete cases
 PD <- PD[complete.cases(PD),]
 
-rowNames <- PD[,1]
-PD[,c("Name")] <- list(NULL)
+PD[,c("X", "ID", "Name", "Nationality", "Club", "PreferredFoot", "BodyType", "Position", "InternationalReputatiton", "WeakFoot", "SkillMoves")] <- list(NULL)
+
+PD
+PD[,7] <- as.numeric(PD[,7])
+#sapply(1:ncol(PD), function(a) {class(PD[,a])})
 
 PD <- scale(PD)
 
