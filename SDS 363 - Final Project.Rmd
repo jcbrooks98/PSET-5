@@ -93,8 +93,21 @@ RMSR_ml
 
 #get proportion of residuals greater than 0.05 in absolute value
 sum(rep(1,len)[abs(resid_ml[upper.tri(resid_ml)])>0.05])/len
+```
+[insert analysis here]
+
+
+*K-Means*
+```{r}
 
 ```
+[insert analysis here]
+
+*MANOVA*
+```{r}
+
+```
+[insert analysis here]
 
 #Conclusions and Discussion
 
