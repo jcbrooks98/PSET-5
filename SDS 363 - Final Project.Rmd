@@ -60,11 +60,6 @@ The third group of predictors is smaller and generally less useful. It is made u
 
 #Descriptive plots, summary statistics
 ```{r}
-
-```
-[insert analysis here]
-
-```{r}
 summary(PD)
 head(PD)
 
@@ -124,19 +119,20 @@ datamat <- data.matrix(whole)
 output1 <- paf(datamat, eigcrit=1, convcrit=.001)
 print(output1$KMO)
 summary(output1)
+#The selected indicators give us a Kaiser-Meyer-Olkin output of 0.74211, which is acceptable. We can proceed with Factor Analysis.
 
-#Using PCA
+#Using PCA to help decide on a number of latent factors
 fit <- princomp(whole, cor=FALSE)
 summary(fit)
 loadings(fit)
 
-#eigenvalue > 1
+#eigenvalue > 1 to determine number of latent factors
 print(summary(fit),digits=2,loadings=fit$loadings,cutoff=0)
-#components 1-35 greater than one, perhaps use a different metric to determine number of latent factors, because this seems to be too many. 
+#components 1-35 greater than one, we will use a different metric to determine number of latent factors, because this seems to be too many, and not necessarily that helpful. 
 
 #scree plot
 plot(fit, type="lines", main="Scree Plot of FIFA Data",col="red",lwd=2,pch=19,cex=1.2)
-#elbow at 3rd component
+#elbow at 3rd component. We will aim for 3 latent factors in our factor analysis. 
 ```
 
 Below is the actual Factor Analysis Test
