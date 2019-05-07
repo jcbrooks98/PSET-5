@@ -54,9 +54,24 @@ The third group of predictors is smaller and generally less useful. It is made u
 #Multivariate Analysis and Discussion of Results
 
 *Factor Analysis*
-In conducting factor analysis for our data, we first had to determine the suitability by computing KMO (Kaiser-Meyer-Olkin). Further, a test such as Principal Component Analysis (PCA) must be conducted to determine a number of latent factors that we are looking for, and as such, we will compute PCA on the covariance matrix because the variable scales we utilized are similar (randing from 0-100). 
+In conducting factor analysis for our data, we first had to determine the suitability by computing KMO (Kaiser-Meyer-Olkin). Further, a test such as Principal Component Analysis (PCA) must be conducted to determine a number of latent factors that we are looking for, and as such, we will compute PCA on the covariance matrix because the variable scales we utilized are similar (ranging from 0-100). 
 The code has been muted for the sake of space in the final report.
-```{r, include=FALSE}
+```{r}
+#subset data that we will use for factor analysis
+data <- PD[,c(4, 6, 7, 9, 17, 18, 19:57)]
+head(data)
+```
+
+```{r}
+#compute the correlation matrix between all indicators
+data1 <- data[,1:length(data)]
+cor(data1)
+corrplot(cor(data1),method = "ellipse", order="hclust", tl.col = "black", tl.cex=.8)
+chart.Correlation(data1, histogram=TRUE, pch=19)
+```
+[comment on relationships that we do/don't observe]
+
+```{r}
 #KMO
 datamat <- data.matrix(data1)
 output1 <- paf(datamat, eigcrit=1, convcrit=.001)
