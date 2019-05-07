@@ -40,6 +40,13 @@ library(PerformanceAnalytics)
 PD <- read.csv("data.csv", header=TRUE, stringsAsFactors = FALSE)
 #isolate only complete cases
 PD <- PD[complete.cases(PD),]
+PD[,c(4, 6, 7, 9, 17, 18, 19:57)]
+PD[,4] <- as.numeric(PD[,4])
+PD[,6] <- as.numeric(PD[,6])
+PD[,7] <- as.numeric(PD[,7])
+PD[,9] <- as.numeric(PD[,9])
+PD[,17] <- as.numeric(PD[,17])
+PD[,18] <- as.numeric(PD[,18])
 ```
 The dataset is quite large, as a result of the game’s intention of accurately representing every male professional soccer player in the world. While the video game surely requires an even larger ocean of data to operate, we will concern ourselves only with the player rating data -- those data that describe the qualities of individual athletes and their particular traits and skills. 
 There are a few broad categories of data in the set. The first type of variable is made up of the information that describes a player and his location. These include physical traits like height and weight, as well as the club for which the player plays professionally, the country for which the player plays in international competition, the player’s wage per game-week, and the like. All of this information is taken directly from publicly available postings by the players’ clubs. Wage is rounded to the nearest thousand, which could change the data somewhat at lower numbers. 
