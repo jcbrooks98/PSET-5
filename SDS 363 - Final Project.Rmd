@@ -23,8 +23,21 @@ Finally, we want to look at the interactions between FIFA players’ nationaliti
 
 #Data
 ```{r}
-PD <- read.csv("data.csv", header=TRUE, stringsAsFactors = FALSE)
+#include relevant libraries for project
+library(aplpack)
+library(fpc)
+library(cluster)
+library(ape)
+library(ggplot2)
+library(DBItest)
+library(tidyverse)  
+library(factoextra)
+library(psych)
+library(rela)
+library(corrplot)
+library(PerformanceAnalytics)
 
+PD <- read.csv("data.csv", header=TRUE, stringsAsFactors = FALSE)
 #isolate only complete cases
 PD <- PD[complete.cases(PD),]
 ```
@@ -99,7 +112,16 @@ sum(rep(1,len)[abs(resid_ml[upper.tri(resid_ml)])>0.05])/len
 
 *K-Means*
 ```{r}
+#make a new matrix for K-Mean Analysis
+KPD <- PD
 
+KPD[,c("X", "ID", "Name", "Nationality", "Club", "PreferredFoot", "BodyType", "Position", "InternationalReputatiton", "WeakFoot", "SkillMoves")] <- list(NULL)
+
+KPD
+KPD[,7] <- as.numeric(KPD[,7])
+#sapply(1:ncol(PD), function(a) {class(PD[,a])})
+
+KPD <- scale(KPD)
 ```
 [insert analysis here]
 
