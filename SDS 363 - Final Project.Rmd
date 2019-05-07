@@ -27,3 +27,11 @@ These skill ratings are, of course, highly subjective. They do not appear out of
 The third group of predictors is smaller and generally less useful. It is made up of semi-categorical predictors (categorical skill ratings with five levels). These include “Skill Moves” and “International Reputation”. We will largely ignore these in our analysis -- they are less about soccer, and more about game mechanics. Skill moves is a good example of this category. From 1 to 5, as players go to up higher thresholds of skill rating, they gain the ability to carry out particular in-game actions.
 
 [insert variables below]
+
+###Descriptive plots, summary statistics
+
+###Multivariate Analysis and Discussion of Results
+
+###Conclusions and Discussion
+
+###Points for further analysis
