@@ -228,6 +228,7 @@ min(PD_stddev)
 max(PD_stddev)
 
 #since we have too many observations, we have chosen to sample 200 players so the information fits into a dendrogram
+set.seed(1234)
 rownumbers<-sample.int(16122,size=200)
 PD_sampled <- PD[rownumbers,]
 rowNames <- rowNames[rownumbers]
@@ -267,6 +268,82 @@ PD.clustAVG.M$labels <- as.character(rowNames[rownumbers])
 plot(PD.clustAVG.M, xlab="",ylab="Distance",main="Clustering for Fifa Players (Average Linkages | Manhattan Distance)")
 ```
 *The four combinations of distance and agglomeration methods produce slightly varied results. Generally, the trees taken together suggest that somewhere between 3-5 groups makes the most sense. With our complete linkage clustering method, interestingly the clusters aren’t as chained as expected with this clustering method. The combination of complete linkage with manhattan distance produced the most clear clusters.* 
+
+#### examining performance of different number of clusters
+```{r}
+
+source("http://reuningscherer.net/stat660/R/HClusEval.R.txt")
+
+# We modified function to be able to change x-axis to zoom into the interested area.
+
+hclus_eval <- function(data_m, dist_m = 'euclidean', clus_m = 'ward', plot_op = T, dist_cust = NA){
+  
+  output_list <- list()
+  
+  ## Some Initial Calculations
+  
+ ### END INITIAL CALCULATIONS
+  
+  ### Create Distance matrix and Clustering ###
+  Info <- paste('Creating Distance Matrix using', dist_m)
+  print(Info)
+  
+    if (dist_m == 'custom' & !is.na(dist_cust)) {dist1 <- dist_cust} 
+    else dist1 <- dist(data_m, method= dist_m)
+
+  
+  Info <- paste('Clustering using', clus_m)
+  print(Info)
+  
+  clust1 <- hclust(dist1, method = clus_m)
+ 
+  print('Clustering Complete. Access the Cluster object in first element of output')
+  
+  output_list[[1]] <- clust1
+  
+  
+  rs_out <- affected.rows(clust1$merge)
+  
+  me <- gen_cutmat(clust1, dim(data_m)[1])
+  rs <- rs_out[[2]]
+
+  # Calculate Metrics #
+  
+  print('Calculating RMSSTD')
+  output_list[[2]] <- RMSSTD_FUNC(data_m, rs, dim(data_m)[1])
+  print('RMSSTD Done. Access in Element 2')
+  
+  print('Calculating RSQ')
+  output_list[[3]] <- RSQ_FUNC(data_m, me, dim(data_m)[1])
+  print('RSQ Done. Access in Element 3')
+  
+  print('Calculating SPRSQ')
+  output_list[[4]] <- SPRS_FUNC(data_m, rs, dim(data_m)[1], me)
+  print('SPRSQ Done. Access in Element 4')
+  
+  print('Calculating Cluster Dist. ')
+  output_list[[5]] <- cluster.dis(data_m, clust1, output_list[[4]])
+  print('CD Done. Access in Element 5')
+
+  ylim_n <- max(output_list[[2]], output_list[[3]], output_list[[4]], output_list[[5]])
+
+  if (plot_op == T){
+  plot(output_list[[3]], type = 'l', col = 'red', xlim=c(1,10), ylim = c(0, ylim_n), lwd=3)
+  lines(output_list[[2]], col = 'blue', lwd=3)
+  lines(output_list[[4]], col = 'green', lwd=3)
+  lines(output_list[[5]], col = 'black', lwd=3)
+  legend('topright', c('RSQ', 'RMSSTD', 'SPRSQ', 'CD'), lty = c(1 ,1,1,1),
+  col = c('red', 'blue', 'green', 'black'))
+  }
+
+  return(output_list)  
+
+}
+
+
+hclus_eval(PD_sampled, dist_m = 'euclidean', clus_m = 'ward', plot_op = T)
+```
+*The steepest portions of the RMSSTD line is before the 5 cluster mark. The RSQ line could be said to flatten out at the 4 or 5 cluster mark. The SPRSQ line clearly flattens a lot after the 3 cluster mark. All in all, we think 4 clusters is good choice from this plot. *  
 
 
 ###K-Means
