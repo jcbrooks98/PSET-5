@@ -125,38 +125,37 @@ datamat <- data.matrix(whole)
 output1 <- paf(datamat, eigcrit=1, convcrit=.001)
 print(output1$KMO)
 #summary(output1)
-#The selected indicators give us a Kaiser-Meyer-Olkin output of 0.74211, which is acceptable. We can proceed with Factor Analysis.
+```
+The selected indicators give us a Kaiser-Meyer-Olkin output of 0.74211, which is acceptable. We can proceed with Factor Analysis.
 
+```{r}
 #Using PCA to help decide on a number of latent factors
 fit <- princomp(whole, cor=FALSE)
-summary(fit)
-loadings(fit)
+
+#used two different metrics to determine how many latent factors we should use in our analyses
 
 #eigenvalue > 1 to determine number of latent factors
 print(summary(fit),digits=2,loadings=fit$loadings,cutoff=0)
-#components 1-35 greater than one, we will use a different metric to determine number of latent factors, because this seems to be too many, and not necessarily that helpful. 
 
 #scree plot
 plot(fit, type="lines", main="Scree Plot for Factor Analysis of FIFA Data",col="red",lwd=2,pch=19,cex=1.2)
-#elbow at 3rd component. We will aim for 3 latent factors in our factor analysis. 
 ```
+We ran PCA using the covariance matrix because the scales of the variables were identical. By using the eigenvalue>1 measure, we found that components 1-35 had eigenvalues greater than one, and as such determined it best to use the scree plot metric, instead to determine number of latent factors, because this seems to be too many, and not necessarily that helpful.From the scree plot we can see an elbow at 3rd component. As such, we will aim for 3 latent factors in our factor analysis.  
 
 Below is the actual Factor Analysis Test using Maximum Likelihood with a Varimax Rotation
 ```{r}
-fact_ml <- fa(datamat, nfactors = 3, rotate = "varimax", SMC = FALSE, fm="ml")
+fact_ml <- fa(datamat, nfactors = 3, rotate = "varimax", fm="ml")
 fact_ml$PVAL
 ```
 
-Loading plot for first two factors using Maximum Likelihood
 ```{r}
+#Loading plot for first two factors using Maximum Likelihood
 plot(fact_ml$loadings, pch=18, col='red', main="ML Loading Plot for First Two Factors",xlab="1st Factor: Ball Control", ylab="2nd Factor: Ball Pressure")
 abline(h=0)
 abline(v=0)
 text(fact_ml$loadings,labels=names(data),cex=0.8)
-```
 
-Correlation matrix analysis
-```{r}
+#Correlation matrix analysis
 #get reproduced correlation matrix
 repro_ml <- fact_ml$loadings%*%t(fact_ml$loadings)
 #residual correlation matrix
@@ -179,18 +178,14 @@ For the sake of comparison, we have also included Factor Analysis using Principa
 #this uses the fa() function in the psych package.  Note that this fails with only 2 factors
 fact_paf <- fa(datamat, nfactors = 3, rotate = "varimax", SMC = FALSE, fm="pa")
 fact_paf$PVAL
-```
 
-Loading plot for first two factors Principal Axis Factoring
-```{r}
+#Loading plot for first two factors Principal Axis Factoring
 plot(fact_paf$loadings, pch=18, col='red', main="PAF Loading Plot for First Two Factors",xlab="1st Factor: Ball Control", ylab="2nd Factor: Ball Pressure")
 abline(h=0)
 abline(v=0)
 text(fact_paf$loadings, labels=names(data),cex=0.8)
-```
 
-Correlation matrix analysis
-```{r}
+#Correlation matrix analysis
 #get reproduced correlation matrix
 repro_paf <- fact_paf$loadings%*%t(fact_paf$loadings)
 #residual correlation matrix
@@ -208,10 +203,7 @@ RMSR_paf <- sqrt(sum(resid_paf[upper.tri(resid_paf)]^2)/len)
 sum(rep(1,len)[abs(resid_paf[upper.tri(resid_paf)])>0.05])/len
 ```
 
-[insert analysis here]
-
-
-
+Of the two factor analyses methods used, the maximum likelihood extraction method with varimax rotation produced a lower RMSR value and also had the smaller proportion of residuals greater than .05. As such, the following analyses will be based off of the maximum likelihood method (the principal axis factoring method is meant only to be used for comparison's sake, and no conclusions will be made from this method). 
 
 *K-Means*
 
