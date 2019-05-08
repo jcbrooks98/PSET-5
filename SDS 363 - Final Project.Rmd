@@ -582,19 +582,15 @@ summary.manova(mod1, test="Wilks")
 
 #### Examining how response variables interact
 ```{r}
-#plot(PDeurlat$SprintSpeed, PDeurlat$Acceleration, main = 'Sprint Speed ~ Acceleration')
-logsprint <- log(PDeurlat$SprintSpeed)
-plot(logsprint, PDeurlat$Acceleration, main = 'Log of Sprint Speed ~ Acceleration')
+plot(PDeurlat$SprintSpeed, PDeurlat$Acceleration, main = 'Sprint Speed ~ Acceleration')
 
-#plot(PDeurlat$Stamina, PDeurlat$Acceleration, main = 'Stamina ~ Acceleration')
-logstamina <- log(PDeurlat$Stamina)
-plot(logstamina, PDeurlat$Acceleration, main = 'Log of Stamina ~ Acceleration')
+plot(PDeurlat$Stamina, PDeurlat$Acceleration, main = 'Stamina ~ Acceleration')
 ```
 *Acceleration seems to have a relatively strong, positive, linear relationship with both SprintSpeed and Stamina. However, it is almost indiscernable given that Wage is so heavily left skewed (SHOULD WE MAKE A TRANSFORMATION TO WAGE TO HELP THIS???)*
 
 # GLM with wage variable
 ```{r}
-mod2 <- lm(as.matrix(PDeurlat[,c("Acceleration", "Stamina")]) ~ PDeurlat$Region + PDeurlat$InternationalReputation + PDeurlat$Wage +  PDeurlat$Region*PDeurlat$InternationalReputation) 
+mod2 <- lm(as.matrix(PDeurlat[,c("Acceleration", "Stamina", "SprintSpeed", "Balance", "Jumping", "Agility", "HeadingAccuracy")]) ~ PDeurlat$Region + PDeurlat$InternationalReputation + PDeurlat$Wage +  PDeurlat$Region*PDeurlat$InternationalReputation) 
 
 summary(mod2)
 ```
@@ -603,6 +599,7 @@ summary(mod2)
 ```{r}
 source("http://www.reuningscherer.net/STAT660/R/CSQPlot.r.txt")
 CSQPlot(mod1$residuals, label="MANOVA Residuals")
+CSQPlot(mod2$residuals, label="GLM Residuals")
 ```
 [insert analysis here]
 
