@@ -19,7 +19,7 @@ One area of interest for us is understanding better how EA producers ultimately 
 
 Further, we seek to look for patterns of players within particular position groups. *Within broad positional categories -- back, midfielder, forward -- can we see discernable subgroups of players?* Again, we would certainly expect to see this, given subjective understandings of soccer tactics. Using k-means as a clustering technique, we hope to create a readable picture of positional subgroups.
 
-Finally, we want to look at the interactions between FIFA players’ nationalities and their skills in various areas. In the international soccer community, it is very common to talk about geographic regions as very different. For instance, it has become accepted wisdom to say that Latin American teams play a more skillful, less team-oriented style, while European teams play with more precision and less individual skill. We hope to see whether the data bear this out. In this vein, our third question for analysis will be: *Do different country groups create players that are differently abled in particular facets of the game?* To test this we will use MANOVA and attempt to establish differences in ability means between various nationality groups.
+Finally, we want to look at the interactions between FIFA players’ nationalities and their skills in various areas. In the international soccer community, it is very common to talk about geographic regions as very different. For instance, it has become accepted wisdom to say that Latin American teams play a more skillful, less team-oriented style, while European teams play with more precision and less individual skill. We hope to see whether the data bear this out. In this vein, our third question for analysis will be: *Do different country groups create players that are differently abled in particular facets of the game?* To test this we will use MANOVA and attempt to establish differences in ability means between various nationality groups across a few levels of player ability. 
 
 #Data
 ```{r, include=FALSE}
@@ -37,6 +37,7 @@ library(rela)
 library(corrplot)
 library(PerformanceAnalytics)
 library(gridExtra)
+library(NbClust)
 
 PD <- read.csv("data.csv", header=TRUE, stringsAsFactors = FALSE)
 #isolate only complete cases
@@ -57,7 +58,7 @@ The second, and ultimately the most significant, type of variable in the set com
 
 These skill ratings are, of course, highly subjective. They do not appear out of thin air; they must be created and compiled by human raters. EA are upfront about their process. They delegate the much of the task of watching and evaluating to a network of over 9000 “data reviewers”, made up of professionals (coaches) and amateurs (qualified fans). The material from the reviewers comes to a group of a few-hundred editors, who compile the data into the rating categories listed below. With this in mind, we can think of these ratings as the results of a large survey, in which soccer fanatics are asked to watch a great deal of game film and give answers to questions about player ability. This is not exactly true -- EA’s producers and editors tweak the data as they see fit, and the sampling of data reviewers is surely not perfectly random -- but thinking of it this way provides a general picture.
 
-The third group of predictors is smaller and generally less useful. It is made up of semi-categorical predictors (categorical skill ratings with five levels). These include “Skill Moves” and “International Reputation”. We will largely ignore these in our analysis -- they are less about soccer, and more about game mechanics. Skill moves is a good example of this category. From 1 to 5, as players go to up higher thresholds of skill rating, they gain the ability to carry out particular in-game actions.
+The third group of predictors is smaller and somewhere between the two previous. It is made up of skill ratings with only five categorical levels. These include “Skill Moves” and “International Reputation”. We will ignore many these in our analysis -- they are less about soccer, and more about game mechanics. Skill moves is a good example of this category. From 1 to 5, as players go to up higher thresholds of skill rating, they gain the ability to carry out particular in-game actions. However, 
 
 #Descriptive plots, summary statistics
 ```{r}
@@ -90,6 +91,7 @@ for (col in boxplotCols){
 # Correlation matrix shown in latter part
 ```
 
+
 #Multivariate Analysis and Discussion of Results
 
 *Factor Analysis*
@@ -115,7 +117,9 @@ corrplot(cor(data3),method = "ellipse", order="hclust", tl.col = "black", tl.cex
 #chart.Correlation(data2, histogram=TRUE, pch=19)
 #chart.Correlation(data3, histogram=TRUE, pch=19)
 ```
-[comment on relationships that we do/don't observe]
+We see many highly correlated predictors. There are strong correlations between many sorts of factors, all of which make a great deal of sense when examined individually. Volleying (kicking the ball out of the air and shooting it at the goal) is highly correlated with finishing (general ability to kick the ball into the goal); finishing ability is very negatively correlated with defensive positional ratings (like center back [CB]); tackling ability (the ability to take the ball away from an opposing player) is highly correlated with ability to intercept the ball (to take possesion of a pass intended for an opposing player). 
+
+Our interest in multivariate factor analysis of this dataset stems from those relationships which are not necessarily as easily expected. Fast players seem to be rated as worse short passers than long passers; players rated as aggressive are more likely to have high 'composure' ratings; strong tacklers seem to be rated as worse at positioning themselves on the field. Many of these combinations of attributes do not seem to make sense together. We think factor analysis will help us see some of the underlying relationships between traits, and ultimately give us insight into the combinations of skills that make a player 'good', either in the video game or in real life. 
 
 ```{r}
 #KMO
@@ -135,7 +139,7 @@ print(summary(fit),digits=2,loadings=fit$loadings,cutoff=0)
 #components 1-35 greater than one, we will use a different metric to determine number of latent factors, because this seems to be too many, and not necessarily that helpful. 
 
 #scree plot
-plot(fit, type="lines", main="Scree Plot of FIFA Data",col="red",lwd=2,pch=19,cex=1.2)
+plot(fit, type="lines", main="Scree Plot for Factor Analysis of FIFA Data",col="red",lwd=2,pch=19,cex=1.2)
 #elbow at 3rd component. We will aim for 3 latent factors in our factor analysis. 
 ```
 
@@ -148,7 +152,7 @@ fact_ml
 
 Loading plot for first two factors
 ```{r}
-plot(fact_ml$loadings, pch=18, col='red')
+plot(fact_ml$loadings, pch=18, col='red', main="Loading Plot for First Two Factors",xlab="First Factor: Axis of Ball Control", ylab="Second Factor: Axis of Ball Pressure")
 abline(h=0)
 abline(v=0)
 text(fact_ml$loadings, labels=names(whole),cex=0.8)
@@ -199,7 +203,7 @@ SPD
 
 
 #get defensive subroup
-PDdef <- PD2[ which(PD2$Position == "CB"), ] #| PD2$Position == "RB" | PD2$Position == "LB" | PD2$Position == "LCB" | PD2$Position == "RCB"), ]
+PDdef <- PD2[ which(PD2$Position == "CB" | PD2$Position == "RCB" | PD2$Position == "LCB" | PD2$Position == "RB" | PD2$Position == "LB" | PD2$Position == "LCB" | PD2$Position == "RCB"), ]
 
 PDdef[,c("X", "ID", "Name", "Nationality", "Club", "PreferredFoot", "BodyType", "Position", "InternationalReputation", "WeakFoot", "SkillMoves")] <- list(NULL)
 
@@ -210,7 +214,7 @@ SPDdef <- scale (PDdef)
 SPDdef
 
 #get midfield subgroup
-PDmid <- PD2[ which(PD2$Position == "CM"), ] #| PD2$Position == "CDM" | PD2$Position == "CAM" | PD2$Position == "LAM" | PD2$Position == "RAM" | PD2$Position == "LCM" | PD2$Position == "RCM" | PD2$Position == "LM" | PD2$Position == "RM"), ]
+PDmid <- PD2[ which(PD2$Position == "CM" | PD2$Position == "CDM" | PD2$Position == "CAM" | PD2$Position == "CDM" | PD2$Position == "CAM" | PD2$Position == "LAM" | PD2$Position == "RAM" | PD2$Position == "LCM" | PD2$Position == "RCM" | PD2$Position == "LM" | PD2$Position == "RM"), ]
 
 PDmid[,c("X", "ID", "Name", "Nationality", "Club", "PreferredFoot", "BodyType", "Position", "InternationalReputation", "WeakFoot", "SkillMoves")] <- list(NULL)
 
@@ -221,7 +225,7 @@ SPDmid <- scale (PDmid)
 SPDmid
 
 #get offensive subgroup
-PDoff <- PD2[ which(PD2$Position == "ST"), ] #| PD2$Position == "RS" | PD2$Position == "LS" | PD2$Position == "LW" | PD2$Position == "RW" | PD2$Position == "CF" | PD2$Position == "LF" | PD2$Position == "RF"), ]
+PDoff <- PD2[ which(PD2$Position == "ST" | PD2$Position == "RW" | PD2$Position == "RS" | PD2$Position == "LS" | PD2$Position == "LW" | PD2$Position == "RW" | PD2$Position == "CF" | PD2$Position == "LF" | PD2$Position == "RF"), ]
 
 PDoff[,c("X", "ID", "Name", "Nationality", "Club", "PreferredFoot", "BodyType", "Position", "InternationalReputation", "WeakFoot", "SkillMoves")] <- list(NULL)
 
@@ -232,7 +236,7 @@ SPDoff <- scale (PDoff)
 SPDoff
 ```
 
-#### run k-means with strikers
+#### run k-means with offensive players
 ```{r}
 fviz_nbclust(SPDoff, kmeans, method = "silhouette") +
 labs(title= "Optimal Cluster Number for Strikers - Silhouette Method") 
@@ -240,6 +244,10 @@ fviz_nbclust(SPDoff, kmeans, method = "wss") +
 labs(title= "Optimal Cluster Number for Strikers - WSS Method") +
 geom_vline(xintercept = 3 , linetype = 2)
 
+nboff <- NbClust(SPDoff, distance = "euclidean", min.nc = 2,
+        max.nc = 10, method = "complete", index ="all")
+
+fviz_nbclust(nboff) + theme_minimal()
 ```
 
 ```{r}
@@ -260,7 +268,7 @@ offp5 <- fviz_cluster(offk5, geom = "point",  data = SPDoff) +
 marrangeGrob(grobs=list(offp2, offp3, offp4, offp5), ncol=2, nrow = 2)
 ```
 
-#### run k-means with center backs 
+#### run k-means with defensive players
 ```{r}
 fviz_nbclust(SPDdef, kmeans, method = "silhouette") +
 labs(title= "Optimal Cluster Number for Center Backs - Silhouette Method") 
@@ -268,6 +276,10 @@ fviz_nbclust(SPDdef, kmeans, method = "wss") +
 labs(title= "Optimal Cluster Number for Center Backs - WSS Method") +
 geom_vline(xintercept = 3 , linetype = 2)
 
+nboff <- NbClust(SPDoff, distance = "euclidean", min.nc = 2,
+        max.nc = 10, method = "complete", index ="all")
+
+fviz_nbclust(nboff) + theme_minimal()
 ```
 
 ```{r}
@@ -276,20 +288,19 @@ defk3 <- kmeans(SPDdef, centers = 3)
 defk4 <- kmeans(SPDdef, centers = 4)
 defk5 <- kmeans(SPDdef, centers = 5)
 
-defp2 <- fviz_cluster(defk2, geom = "point", data = SPDoff) + 
+defp2 <- fviz_cluster(defk2, geom = "point", data = SPDdef) + 
   ggtitle("k = 2")
-defp3 <- fviz_cluster(defk3, geom = "point",  data = SPDoff) + 
+defp3 <- fviz_cluster(defk3, geom = "point",  data = SPDdef) + 
   ggtitle("k = 3")
-defp4 <- fviz_cluster(defk4, geom = "point",  data = SPDoff) + 
+defp4 <- fviz_cluster(defk4, geom = "point",  data = SPDdef) + 
   ggtitle("k = 4")
-defp5 <- fviz_cluster(defk5, geom = "point",  data = SPDoff) + 
+defp5 <- fviz_cluster(defk5, geom = "point",  data = SPDdef) + 
   ggtitle("k = 5")
 
 marrangeGrob(grobs=list(defp2, defp3, defp4, defp5), ncol=2, nrow = 2)
 ```
-#### run k-means with center midfielders
 
-
+#### run k-means with center midfielder players
 ```{r}
 fviz_nbclust(SPDmid, kmeans, method = "silhouette") +
 labs(title= "Optimal Cluster Number for Center Midfielders - Silhouette Method") 
@@ -297,6 +308,10 @@ fviz_nbclust(SPDmid, kmeans, method = "wss") +
 labs(title= "Optimal Cluster Number for Center Midfielders - WSS Method") +
 geom_vline(xintercept = 3 , linetype = 2)
 
+nboff <- NbClust(SPDoff, distance = "euclidean", min.nc = 2,
+        max.nc = 10, method = "complete", index ="all")
+
+fviz_nbclust(nboff) + theme_minimal()
 ```
 
 ```{r}
@@ -305,13 +320,13 @@ midk3 <- kmeans(SPDmid, centers = 3)
 midk4 <- kmeans(SPDmid, centers = 4)
 midk5 <- kmeans(SPDmid, centers = 5)
 
-midp2 <- fviz_cluster(midk2, geom = "point", data = SPDoff) + 
+midp2 <- fviz_cluster(midk2, geom = "point", data = SPDmid) + 
   ggtitle("k = 2")
-midp3 <- fviz_cluster(midk3, geom = "point",  data = SPDoff) + 
+midp3 <- fviz_cluster(midk3, geom = "point",  data = SPDmid) + 
   ggtitle("k = 3")
-midp4 <- fviz_cluster(midk4, geom = "point",  data = SPDoff) + 
+midp4 <- fviz_cluster(midk4, geom = "point",  data = SPDmid) + 
   ggtitle("k = 4")
-midp5 <- fviz_cluster(midk5, geom = "point",  data = SPDoff) + 
+midp5 <- fviz_cluster(midk5, geom = "point",  data = SPDmid) + 
   ggtitle("k = 5")
 
 marrangeGrob(grobs=list(midp2, midp3, midp4, midp5), ncol=2, nrow = 2)
@@ -325,7 +340,7 @@ marrangeGrob(grobs=list(midp2, midp3, midp4, midp5), ncol=2, nrow = 2)
 ```{r}
 PDeurlat <- PD[ which(PD$Nationality == "Russia" | PD$Nationality == "Germany" | PD$Nationality == "England" | PD$Nationality == "France" | PD$Nationality == "Italy" | PD$Nationality == "Spain" | PD$Nationality == "Ukraine" | PD$Nationality == "Poland" | PD$Nationality == "Romania" | PD$Nationality == "Netherlands" | PD$Nationality == "Argentina" | PD$Nationality == "Bolivia" | PD$Nationality == "Brazil" | PD$Nationality == "Chile" | PD$Nationality == "Colombia" | PD$Nationality == "Ecuador" | PD$Nationality == "Paraguay" | PD$Nationality == "Peru" | PD$Nationality == "Uruguay" | PD$Nationality == "Venezuela"), ]
 
-Region <- ifelse(PD$Nationality == "Russia" | PD$Nationality == "Germany" | PD$Nationality == "England" | PD$Nationality == "France" | PD$Nationality == "Italy" | PD$Nationality == "Spain" | PD$Nationality == "Ukraine" | PD$Nationality == "Poland" | PD$Nationality == "Romania" | PD$Nationality == "Netherlands","Europe","LatinAmerica")
+Region <- ifelse(PDeurlat$Nationality == "Russia" | PDeurlat$Nationality == "Germany" | PDeurlat$Nationality == "England" | PDeurlat$Nationality == "France" | PDeurlat$Nationality == "Italy" | PDeurlat$Nationality == "Spain" | PDeurlat$Nationality == "Ukraine" | PDeurlat$Nationality == "Poland" | PDeurlat$Nationality == "Romania" | PDeurlat$Nationality == "Netherlands","Europe","LatinAmerica")
 
 PD$Region <- Region
 
@@ -362,8 +377,8 @@ interaction.plot(PD$Region,PD$InternationalReputation,PD$Acceleration, lwd=3,col
 legend("topleft", c("Poor","Low","Medium","Fair","Good"),bty="n",lty=2,lwd=3,col=c("red","blue","black","green","purple"), title="International Reputation",inset = 0, cex=.8,y.intersp
 =.7, horiz = TRUE)
 ```
+These interaction plots show promise for MANOVA or some sort of generalized linear model. 
 
-```
 [insert analysis here]
 
 #Conclusions and Discussion
