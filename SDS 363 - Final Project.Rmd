@@ -58,7 +58,7 @@ The second, and ultimately the most significant, type of variable in the set com
 
 These skill ratings are, of course, highly subjective. They do not appear out of thin air; they must be created and compiled by human raters. EA are upfront about their process. They delegate the much of the task of watching and evaluating to a network of over 9000 “data reviewers”, made up of professionals (coaches) and amateurs (qualified fans). The material from the reviewers comes to a group of a few-hundred editors, who compile the data into the rating categories listed below. With this in mind, we can think of these ratings as the results of a large survey, in which soccer fanatics are asked to watch a great deal of game film and give answers to questions about player ability. This is not exactly true -- EA’s producers and editors tweak the data as they see fit, and the sampling of data reviewers is surely not perfectly random -- but thinking of it this way provides a general picture.
 
-The third group of predictors is smaller and somewhere between the two previous. It is made up of skill ratings with only five categorical levels. These include “Skill Moves” and “International Reputation”. We will ignore many these in our analysis -- they are less about soccer, and more about game mechanics. Skill moves is a good example of this category. From 1 to 5, as players go to up higher thresholds of skill rating, they gain the ability to carry out particular in-game actions. However, 
+The third group of predictors is smaller and somewhere between the two previous. It is made up of skill ratings with only five categorical levels. These include “Skill Moves” and “International Reputation”. We will ignore many these in our analysis -- some are less about soccer, and more about game mechanics. Skill moves is a good example of this category. From 1 to 5, as players go to up higher thresholds of skill rating, they gain the ability to carry out particular in-game actions. However, International Reputation will be a useful categorical tool for us. We will use it as a way of breaking players down into five relative quality brackets. (Note: It is really more like four levels. There are only five players with a '5' for International Reputation -- Neymar Jr., Messi, L. Suarez, C. Ronaldo, and Ibrahimovic. These are by far the most well-respected players across the world.)
 
 #Descriptive plots, summary statistics
 ```{r}
@@ -70,7 +70,7 @@ table(PD$Nationality)
 table(PD$Club)
 
 # Plot to give a sense of the variance in number of players produced by different countries
-plot(table(PD$Nationality))
+plot(table(PD$Nationality), ylab="Frequency", xlab="Country",las=2)
 
 #summary histograms for all of the continuous variables using ggplot function
 PD[c(4, 6, 7, 9, 11, 12, 13, 16:57)] %>%
@@ -232,8 +232,6 @@ PD[,7] <- as.numeric(PD[,7])
 
 SPD <- scale(PD)
 
-SPD
-
 
 
 #get defensive subroup
@@ -245,7 +243,6 @@ PDdef[,6] <- as.numeric(PDdef[,6])
 
 SPDdef <- scale (PDdef)
 
-SPDdef
 
 #get midfield subgroup
 PDmid <- PD2[ which(PD2$Position == "CM" | PD2$Position == "CDM" | PD2$Position == "CAM" | PD2$Position == "CDM" | PD2$Position == "CAM" | PD2$Position == "LAM" | PD2$Position == "RAM" | PD2$Position == "LCM" | PD2$Position == "RCM" | PD2$Position == "LM" | PD2$Position == "RM"), ]
@@ -256,7 +253,6 @@ PDmid[,6] <- as.numeric(PDmid[,6])
 
 SPDmid <- scale (PDmid)
 
-SPDmid
 
 #get offensive subgroup
 PDoff <- PD2[ which(PD2$Position == "ST" | PD2$Position == "RW" | PD2$Position == "RS" | PD2$Position == "LS" | PD2$Position == "LW" | PD2$Position == "RW" | PD2$Position == "CF" | PD2$Position == "LF" | PD2$Position == "RF"), ]
@@ -267,7 +263,6 @@ PDoff[,6] <- as.numeric(PDoff[,6])
 
 SPDoff <- scale (PDoff)
 
-SPDoff
 ```
 
 #### run k-means with offensive players
@@ -334,7 +329,7 @@ defp5 <- fviz_cluster(defk5, geom = "point",  data = SPDdef) +
 marrangeGrob(grobs=list(defp2, defp3, defp4, defp5), ncol=2, nrow = 2)
 ```
 
-#### run k-means with center midfielder players
+#### run k-means with center midfield players
 ```{r}
 fviz_nbclust(SPDmid, kmeans, method = "silhouette") +
 labs(title= "Optimal Cluster Number for Center Midfield Players - Silhouette Method") 
@@ -384,32 +379,32 @@ PDeurlat$Region <- Region
 #make interaction plots
 ```{r}
 
-interaction.plot(PDeurlat$Region,PDeurlat$InternationalReputation,PDeurlat$HeadingAccuracy, lwd=3,col=c("red","blue","black","green","purple"),trace.label = "International Reputation",xlab="Region",ylab="Mean of Heading Accuracy",main="Interaction Plot for Heading Accuracy", legend=FALSE)
-legend("topleft", c("Poor","Low","Medium","Fair","Good"),bty="n",lty=2,lwd=3,col=c("red","blue","black","green","purple"), title="International Reputation",inset = 0, cex=.8,y.intersp
+interaction.plot(PDeurlat$Region,PDeurlat$InternationalReputation,PDeurlat$HeadingAccuracy, lwd=3,col=c("red","blue","black","green"),trace.label = "International Reputation",xlab="Region",ylab="Mean of Heading Accuracy",main="Interaction Plot for Heading Accuracy", legend=FALSE)
+legend("topleft", c("Poor","Low","Fair","Good"),bty="n",lty=2,lwd=3,col=c("red","blue","black","green","purple"), title="International Reputation",inset = 0, cex=.8,y.intersp
 =.7, horiz = TRUE)
 
-interaction.plot(PDeurlat$Region,PDeurlat$InternationalReputation,PDeurlat$Agility,lwd=3,col=c("red","blue","black","green","purple"),trace.label="International Reputation",xlab="Region",ylab="Mean of Agility",main="Interaction Plot for Agility",legend=FALSE)
-legend("topleft", c("Poor","Low","Medium","Fair","Good"),bty="n",lty=2,lwd=3,col=c("red","blue","black","green","purple"), title="International Reputationt",inset = 0, cex=.8,y.intersp
+interaction.plot(PDeurlat$Region,PDeurlat$InternationalReputation,PDeurlat$Agility,lwd=3,col=c("red","blue","black","green"),trace.label="International Reputation",xlab="Region",ylab="Mean of Agility",main="Interaction Plot for Agility",legend=FALSE)
+legend("topleft", c("Poor","Low","Fair","Good"),bty="n",lty=2,lwd=3,col=c("red","blue","black","green","purple"), title="International Reputationt",inset = 0, cex=.8,y.intersp
 =.7, horiz = TRUE)
 
-interaction.plot(PDeurlat$Region,PDeurlat$InternationalReputation,PDeurlat$Stamina, lwd=3,col=c("red","blue","black","green","purple"),trace.label = "International Reputation",xlab="Region",ylab="Mean of Stamina",main="Interaction Plot for Stamina", legend=FALSE)
-legend("topleft", c("Poor","Low","Medium","Fair","Good"),bty="n",lty=2,lwd=3,col=c("red","blue","black","green","purple"), title="International Reputation",inset = 0, cex=.8,y.intersp
+interaction.plot(PDeurlat$Region,PDeurlat$InternationalReputation,PDeurlat$Stamina, lwd=3,col=c("red","blue","black","green"),trace.label = "International Reputation",xlab="Region",ylab="Mean of Stamina",main="Interaction Plot for Stamina", legend=FALSE)
+legend("topleft", c("Poor","Low","Fair","Good"),bty="n",lty=2,lwd=3,col=c("red","blue","black","green","purple"), title="International Reputation",inset = 0, cex=.8,y.intersp
 =.7, horiz = TRUE)
 
-interaction.plot(PDeurlat$Region,PDeurlat$InternationalReputation,PDeurlat$Jumping, lwd=3,col=c("red","blue","black","green","purple"),trace.label = "International Reputation",xlab="Region",ylab="Mean of Jumping",main="Interaction Plot for Jumping", legend=FALSE)
-legend("topleft", c("Poor","Low","Medium","Fair","Good"),bty="n",lty=2,lwd=3,col=c("red","blue","black","green","purple"), title="International Reputation",inset = 0, cex=.8,y.intersp
+interaction.plot(PDeurlat$Region,PDeurlat$InternationalReputation,PDeurlat$Jumping, lwd=3,col=c("red","blue","black","green"),trace.label = "International Reputation",xlab="Region",ylab="Mean of Jumping",main="Interaction Plot for Jumping", legend=FALSE)
+legend("topleft", c("Poor","Low","Fair","Good"),bty="n",lty=2,lwd=3,col=c("red","blue","black","green","purple"), title="International Reputation",inset = 0, cex=.8,y.intersp
 =.7, horiz = TRUE)
 
-interaction.plot(PDeurlat$Region,PDeurlat$InternationalReputation,PDeurlat$Balance, lwd=3,col=c("red","blue","black","green","purple"),trace.label = "International Reputation",xlab="Region",ylab="Mean of Balance",main="Interaction Plot for Balance", legend=FALSE)
-legend("topleft", c("Poor","Low","Medium","Fair","Good"),bty="n",lty=2,lwd=3,col=c("red","blue","black","green","purple"), title="International Reputation",inset = 0, cex=.8,y.intersp
+interaction.plot(PDeurlat$Region,PDeurlat$InternationalReputation,PDeurlat$Balance, lwd=3,col=c("red","blue","black","green"),trace.label = "International Reputation",xlab="Region",ylab="Mean of Balance",main="Interaction Plot for Balance", legend=FALSE)
+legend("topleft", c("Poor","Low","Fair","Good"),bty="n",lty=2,lwd=3,col=c("red","blue","black","green","purple"), title="International Reputation",inset = 0, cex=.8,y.intersp
 =.7, horiz = TRUE)
 
-interaction.plot(PDeurlat$Region,PDeurlat$InternationalReputation,PDeurlat$SprintSpeed, lwd=3,col=c("red","blue","black","green","purple"),trace.label = "International Reputation",xlab="Region",ylab="Mean of Sprint Speed",main="Interaction Plot for Sprint Speed", legend=FALSE)
-legend("topleft", c("Poor","Low","Medium","Fair","Good"),bty="n",lty=2,lwd=3,col=c("red","blue","black","green","purple"), title="International Reputation",inset = 0, cex=.8,y.intersp
+interaction.plot(PDeurlat$Region,PDeurlat$InternationalReputation,PDeurlat$SprintSpeed, lwd=3,col=c("red","blue","black","green"),trace.label = "International Reputation",xlab="Region",ylab="Mean of Sprint Speed",main="Interaction Plot for Sprint Speed", legend=FALSE)
+legend("topleft", c("Poor","Low","Fair","Good"),bty="n",lty=2,lwd=3,col=c("red","blue","black","green","purple"), title="International Reputation",inset = 0, cex=.8,y.intersp
 =.7, horiz = TRUE)
 
-interaction.plot(PDeurlat$Region,PDeurlat$InternationalReputation,PDeurlat$Acceleration, lwd=3,col=c("red","blue","black","green","purple"),trace.label = "International Reputation",xlab="Region",ylab="Mean of Acceleration",main="Interaction Plot for Acceleration", legend=FALSE)
-legend("topleft", c("Poor","Low","Medium","Fair","Good"),bty="n",lty=2,lwd=3,col=c("red","blue","black","green","purple"), title="International Reputation",inset = 0, cex=.8,y.intersp
+interaction.plot(PDeurlat$Region,PDeurlat$InternationalReputation,PDeurlat$Acceleration, lwd=3,col=c("red","blue","black","green"),trace.label = "International Reputation",xlab="Region",ylab="Mean of Acceleration",main="Interaction Plot for Acceleration", legend=FALSE)
+legend("topleft", c("Poor","Low","Fair","Good"),bty="n",lty=2,lwd=3,col=c("red","blue","black","green","purple"), title="International Reputation",inset = 0, cex=.8,y.intersp
 =.7, horiz = TRUE)
 ```
 *These interaction plots show promise for MANOVA or some sort of generalized linear model.*
@@ -436,7 +431,12 @@ summary.manova(mod1, test="Wilks")
 #### Examining how skillMoves interacts with our response variables
 ```{r}
 plot(PDeurlat$Wage, PDeurlat$Acceleration, main = 'Wage ~ Acceleration')
-plot(PDeurlat$Wage, PDeurlat$Stamina, main = 'Wage ~ Stamina')
+logwage <- log(PDeurlat$Wage)
+plot(logwage, PDeurlat$Acceleration, main = 'Log of Wage ~ Acceleration')
+
+plot(PDeurlat$Wage, PDeurlat$Stamina, main = 'Stamina ~ Acceleration')
+logstamina <- log(PDeurlat$Stamina)
+plot(logstamina, PDeurlat$Acceleration, main = 'Log of Stamina ~ Acceleration')
 ```
 *Wage seems to have a very weak, positive, linear relationship with both Acceleration and Stamina. However, it is almost indiscernable given that Wage is so heavily left skewed (SHOULD WE MAKE A TRANSFORMATION TO WAGE TO HELP THIS???)*
 
