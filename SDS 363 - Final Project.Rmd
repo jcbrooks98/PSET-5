@@ -438,6 +438,7 @@ summary.manova(mod1, test="Wilks")
 plot(PDeurlat$Wage, PDeurlat$Acceleration, main = 'Wage ~ Acceleration')
 plot(PDeurlat$Wage, PDeurlat$Stamina, main = 'Wage ~ Stamina')
 ```
+*Wage seems to have a very weak, positive, linear relationship with both Acceleration and Stamina. However, it is almost indiscernable given that Wage is so heavily left skewed (SHOULD WE MAKE A TRANSFORMATION TO WAGE TO HELP THIS???)*
 
 # GLM with skillMoves variable
 ```{r}
