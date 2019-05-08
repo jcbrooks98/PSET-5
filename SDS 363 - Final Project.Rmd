@@ -544,15 +544,15 @@ legend("topleft", c("Poor","Low","Fair","Good"),bty="n",lty=2,lwd=3,col=c("red",
 
 ```{r}
 #examine multivariate normality within each region
-CSQPlot(PDeurlat[PDeurlat$Region == "Europe", c("Acceleration", "Stamina", "SprintSpeed", "Balance", "Jumping", "Agility", "HeadingAccuracy")],label= "Europe")
-CSQPlot(PDeurlat[PDeurlat$Region == "LatinAmerica", c("Acceleration", "Stamina", "SprintSpeed", "Balance", "Jumping", "Agility", "HeadingAccuracy")],label= "LatinAmerica")
+CSQPlot(PDeurlat[PDeurlat$Region == "Europe", c("Acceleration", "Stamina", "Balance", "HeadingAccuracy")],label= "Europe")
+CSQPlot(PDeurlat[PDeurlat$Region == "LatinAmerica", c("Acceleration", "Stamina", "Balance", "HeadingAccuracy")],label= "LatinAmerica")
 ```
 
 ```{r}
 # Boxplots of mean score by region for each response variable
 #Make labels vector
-responsevec <- c("Acceleration", "Stamina", "SprintSpeed", "Balance", "Jumping", "Agility", "HeadingAccuracy")
-for (i in c("Acceleration", "Stamina", "SprintSpeed", "Balance", "Jumping", "Agility", "HeadingAccuracy")){
+responsevec <- c("Acceleration", "Stamina", "Balance", "HeadingAccuracy")
+for (i in c("Acceleration", "Stamina", "Balance", "HeadingAccuracy")){
   boxplot(PDeurlat[,i] ~ Region, data = PDeurlat, col = 'yellow', main=i, ylab = "")
   #calculate means using the tapply function - could also use the by function
   means <- tapply(PDeurlat[,i], PDeurlat$Region,mean)
@@ -563,7 +563,7 @@ for (i in c("Acceleration", "Stamina", "SprintSpeed", "Balance", "Jumping", "Agi
 
 #### One-way Manova
 ```{r}
-mod0 <- manova(as.matrix(PDeurlat[,c("Acceleration", "Stamina", "SprintSpeed", "Balance", "Jumping", "Agility", "HeadingAccuracy")]) ~ PDeurlat$Region)
+mod0 <- manova(as.matrix(PDeurlat[,c("Acceleration", "Stamina", "Balance", "HeadingAccuracy")]) ~ PDeurlat$Region)
 summary.aov(mod0)
 summary.manova(mod0)
 summary.manova(mod0, test="Wilks")
@@ -572,7 +572,7 @@ summary.manova(mod0, test="Wilks")
 
 #### Two-way Manova
 ```{r}
-mod1 <- manova(as.matrix(PDeurlat[,c("Acceleration", "Stamina", "SprintSpeed", "Balance", "Jumping", "Agility", "HeadingAccuracy")]) ~ PDeurlat$Region + PDeurlat$InternationalReputation + PDeurlat$Region*PDeurlat$InternationalReputation) 
+mod1 <- manova(as.matrix(PDeurlat[,c("Acceleration", "Stamina", "Balance", "HeadingAccuracy")]) ~ PDeurlat$Region + PDeurlat$InternationalReputation + PDeurlat$Region*PDeurlat$InternationalReputation) 
 
 summary.aov(mod1)
 summary.manova(mod1)
@@ -582,15 +582,14 @@ summary.manova(mod1, test="Wilks")
 
 #### Examining how response variables interact
 ```{r}
-plot(PDeurlat$SprintSpeed, PDeurlat$Acceleration, main = 'Sprint Speed ~ Acceleration')
-
+plot(PDeurlat$Balance, PDeurlat$Acceleration, main = 'Balance ~ Acceleration')
 plot(PDeurlat$Stamina, PDeurlat$Acceleration, main = 'Stamina ~ Acceleration')
 ```
 *Acceleration seems to have a relatively strong, positive, linear relationship with both SprintSpeed and Stamina. However, it is almost indiscernable given that Wage is so heavily left skewed (SHOULD WE MAKE A TRANSFORMATION TO WAGE TO HELP THIS???)*
 
 # GLM with wage variable
 ```{r}
-mod2 <- lm(as.matrix(PDeurlat[,c("Acceleration", "Stamina", "SprintSpeed", "Balance", "Jumping", "Agility", "HeadingAccuracy")]) ~ PDeurlat$Region + PDeurlat$InternationalReputation + PDeurlat$Wage +  PDeurlat$Region*PDeurlat$InternationalReputation) 
+mod2 <- lm(as.matrix(PDeurlat[,c("Acceleration", "Stamina", "Balance", "HeadingAccuracy")]) ~ PDeurlat$Region + PDeurlat$InternationalReputation + PDeurlat$Wage +  PDeurlat$Region*PDeurlat$InternationalReputation) 
 
 summary(mod2)
 ```
