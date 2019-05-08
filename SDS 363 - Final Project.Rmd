@@ -103,7 +103,7 @@ data <- PD[,c(4, 6, 7, 9, 11, 12, 13, 16:57)]
 ```{r}
 #partition into thirds so that correlation plots are more readible
 whole <- data[,1:length(data)]
-data1 <- data[,1:length(data)/3]
+data1 <- data[,1:(length(data)/3)]
 data2 <- data[,(length(data)/3):(2*(length(data)/3))]
 data3 <- data[,(2*(length(data)/3)):length(data)]
 
