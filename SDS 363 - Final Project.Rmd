@@ -94,8 +94,7 @@ for (col in boxplotCols){
 
 #Multivariate Analysis and Discussion of Results
 
-*Factor Analysis*
-In conducting factor analysis for our data, we first had to determine the suitability by computing KMO (Kaiser-Meyer-Olkin). Further, a test such as Principal Component Analysis (PCA) must be conducted to determine a number of latent factors that we are looking for, and as such, we will compute PCA on the covariance matrix because the variable scales we utilized are similar (ranging from 0-100). 
+###Factor Analysis
 ```{r}
 #subset data that we will use for factor analysis
 data <- PD[,c(4, 6, 7, 9, 11, 12, 13, 16:57)]
@@ -113,11 +112,11 @@ corrplot(cor(data1),method = "ellipse", order="hclust", tl.col = "black", tl.cex
 corrplot(cor(data2),method = "ellipse", order="hclust", tl.col = "black", tl.cex=.8)
 corrplot(cor(data3),method = "ellipse", order="hclust", tl.col = "black", tl.cex=.8)
 ```
-We see many highly correlated predictors. There are strong correlations between many sorts of factors, all of which make a great deal of sense when examined individually. Volleying (kicking the ball out of the air and shooting it at the goal) is highly correlated with finishing (general ability to kick the ball into the goal); finishing ability is very negatively correlated with defensive positional ratings (like center back [CB]); tackling ability (the ability to take the ball away from an opposing player) is highly correlated with ability to intercept the ball (to take possesion of a pass intended for an opposing player). 
+*We see many highly correlated predictors. There are strong correlations between many sorts of factors, all of which make a great deal of sense when examined individually. Volleying (kicking the ball out of the air and shooting it at the goal) is highly correlated with finishing (general ability to kick the ball into the goal); finishing ability is very negatively correlated with defensive positional ratings (like center back [CB]); tackling ability (the ability to take the ball away from an opposing player) is highly correlated with ability to intercept the ball (to take possesion of a pass intended for an opposing player).*
 
-Further, our correlation matrices show that we have a number of indicators that are correlated deeply, suggesting the viability of finding some underlying factors affecting variation. Some correlation magnitudes are smaller, but many are somewhat large, between 0.6 and 0.9. For instance, some of the larger correlations have to do with defensive ability such as marking and slide tackling. We also see some high correlations involving indicators that relate to skill.
+*Further, our correlation matrices show that we have a number of indicators that are correlated deeply, suggesting the viability of finding some underlying factors affecting variation. Some correlation magnitudes are smaller, but many are somewhat large, between 0.6 and 0.9. For instance, some of the larger correlations have to do with defensive ability such as marking and slide tackling. We also see some high correlations involving indicators that relate to skill.*
 
-Our interest in multivariate factor analysis of this dataset stems from those relationships which are not necessarily as easily expected. Fast players seem to be rated as worse short passers than long passers; players rated as aggressive are more likely to have high 'composure' ratings; strong tacklers seem to be rated as worse at positioning themselves on the field. Many of these combinations of attributes do not seem to make sense together. We think factor analysis will help us see some of the underlying relationships between traits, and ultimately give us insight into the combinations of skills that make a player 'good', either in the video game or in real life.
+*Our interest in multivariate factor analysis of this dataset stems from those relationships which are not necessarily as easily expected. Fast players seem to be rated as worse short passers than long passers; players rated as aggressive are more likely to have high 'composure' ratings; strong tacklers seem to be rated as worse at positioning themselves on the field. Many of these combinations of attributes do not seem to make sense together. We think factor analysis will help us see some of the underlying relationships between traits, and ultimately give us insight into the combinations of skills that make a player 'good', either in the video game or in real life.*
 
 ```{r}
 #KMO
@@ -126,7 +125,7 @@ output1 <- paf(datamat, eigcrit=1, convcrit=.001)
 print(output1$KMO)
 #summary(output1)
 ```
-The selected indicators give us a Kaiser-Meyer-Olkin output of 0.74211, which is acceptable. We can proceed with Factor Analysis.
+*In conducting factor analysis for our data, we first had to determine the suitability by computing KMO (Kaiser-Meyer-Olkin). Further, a test such as Principal Component Analysis (PCA) must be conducted to determine a number of latent factors that we are looking for, and as such, we will compute PCA on the covariance matrix because the variable scales we utilized are similar (ranging from 0-100). The selected indicators give us a Kaiser-Meyer-Olkin output of 0.74211, which is acceptable. We can proceed with Factor Analysis.*
 
 ```{r}
 #Using PCA to help decide on a number of latent factors
@@ -140,9 +139,9 @@ print(summary(fit),digits=2,loadings=fit$loadings,cutoff=0)
 #scree plot
 plot(fit, type="lines", main="Scree Plot for Factor Analysis of FIFA Data",col="red",lwd=2,pch=19,cex=1.2)
 ```
-We ran PCA using the covariance matrix because the scales of the variables were identical. By using the eigenvalue>1 measure, we found that components 1-35 had eigenvalues greater than one, and as such determined it best to use the scree plot metric, instead to determine number of latent factors, because this seems to be too many, and not necessarily that helpful.From the scree plot we can see an elbow at 3rd component. As such, we will aim for 3 latent factors in our factor analysis.  
+*We ran PCA using the covariance matrix because the scales of the variables were identical. By using the eigenvalue>1 measure, we found that components 1-35 had eigenvalues greater than one, and as such determined it best to use the scree plot metric, instead to determine number of latent factors, because this seems to be too many, and not necessarily that helpful.From the scree plot we can see an elbow at 3rd component. As such, we will aim for 3 latent factors in our factor analysis.*
 
-Below is the actual Factor Analysis Test using Maximum Likelihood with a Varimax Rotation
+####Below is the actual Factor Analysis Test using Maximum Likelihood with a Varimax Rotation
 ```{r}
 fact_ml <- fa(datamat, nfactors = 3, SMC = FALSE, rotate = "varimax", fm="ml")
 fact_ml$PVAL
@@ -171,7 +170,7 @@ RMSR_ml <- sqrt(sum(resid_ml[upper.tri(resid_ml)]^2)/len)
 sum(rep(1,len)[abs(resid_ml[upper.tri(resid_ml)])>0.05])/len
 ```
 
-For the sake of comparison, we have also included Factor Analysis using Principal Axis Factoring with a varimax rotation.
+####For the sake of comparison, we have also included Factor Analysis using Principal Axis Factoring with a varimax rotation.
 ```{r}
 #this uses the fa() function in the psych package.  Note that this fails with only 2 factors
 fact_paf <- fa(datamat, nfactors = 3, rotate = "varimax", SMC = FALSE, fm="pa")
@@ -202,14 +201,13 @@ RMSR_paf <- sqrt(sum(resid_paf[upper.tri(resid_paf)]^2)/len)
 sum(rep(1,len)[abs(resid_paf[upper.tri(resid_paf)])>0.05])/len
 ```
 
-Of the two factor analyses methods used, the principal axis factoring extraction method with varimax rotation produced a lower RMSR value (0.14286 vs 0.15986) and also had the smaller proportion of residuals greater than .05. As such, the following analyses will be based off of the principal axis factoring method (the maximum likelihood method is meant only to be used for comparison's sake, and no conclusions will be made from this method). 
+*Of the two factor analyses methods used, the principal axis factoring extraction method with varimax rotation produced a lower RMSR value (0.14286 vs 0.15986) and also had the smaller proportion of residuals greater than .05. As such, the following analyses will be based off of the principal axis factoring method (the maximum likelihood method is meant only to be used for comparison's sake, and no conclusions will be made from this method).*
 
-The first latent factor seems to be about handling when in posession of the ball (ball control), and ability to act as an effective attacker. The second latent factor seems to be about ability to act as an effective defender (ball pressure). The third latent factor expresses variation on skills that are general player attributes, such as height, weight, and other characteristics marking athleticism — there are positive values for acceleration, sprint speed and finishing, but negative values for height and weight. Together, these three factors account for 68% of the variance in the data. 
+*The first latent factor seems to be about handling when in posession of the ball (ball control), and ability to act as an effective attacker. The second latent factor seems to be about ability to act as an effective defender (ball pressure). The third latent factor expresses variation on skills that are general player attributes, such as height, weight, and other characteristics marking athleticism — there are positive values for acceleration, sprint speed and finishing, but negative values for height and weight. Together, these three factors account for 68% of the variance in the data.* 
 
-A player's overall score seems to be most closely associated with factor one, which we determined to be ability to maintain solid possession of the ball, attack fiercely, and capitalize off of opportunity. Thus, we are able to determine that when EA Sports Analysts are subjectively determining the x-factor, it is very likely that players that are able to attack the ball well and capitalize often will be given a boost when determining their overall rating in the game. 
+*A player's overall score seems to be most closely associated with factor one, which we determined to be ability to maintain solid possession of the ball, attack fiercely, and capitalize off of opportunity. Thus, we are able to determine that when EA Sports Analysts are subjectively determining the x-factor, it is very likely that players that are able to attack the ball well and capitalize often will be given a boost when determining their overall rating in the game.*
 
-*K-Means*
-
+###K-Means
 ```{r}
 #read data
 PD <- read.csv("data.csv", header=TRUE, stringsAsFactors = FALSE)
