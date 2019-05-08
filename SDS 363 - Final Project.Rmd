@@ -544,15 +544,15 @@ legend("topleft", c("Poor","Low","Fair","Good"),bty="n",lty=2,lwd=3,col=c("red",
 
 ```{r}
 #examine multivariate normality within each region
-CSQPlot(PDeurlat[PDeurlat$Region == "Europe", c("Acceleration", "Stamina")],label= "Europe")
-CSQPlot(PDeurlat[PDeurlat$Region == "LatinAmerica", c("Acceleration", "Stamina")],label= "LatinAmerica")
+CSQPlot(PDeurlat[PDeurlat$Region == "Europe", c("Acceleration", "Stamina", "SprintSpeed", "Balance", "Jumping", "Agility", "HeadingAccuracy")],label= "Europe")
+CSQPlot(PDeurlat[PDeurlat$Region == "LatinAmerica", c("Acceleration", "Stamina", "SprintSpeed", "Balance", "Jumping", "Agility", "HeadingAccuracy")],label= "LatinAmerica")
 ```
 
 ```{r}
 # Boxplots of mean score by region for each response variable
 #Make labels vector
-responsevec <- c("Acceleration", "Stamina")
-for (i in c("Acceleration", "Stamina")){
+responsevec <- c("Acceleration", "Stamina", "SprintSpeed", "Balance", "Jumping", "Agility", "HeadingAccuracy")
+for (i in c("Acceleration", "Stamina", "SprintSpeed", "Balance", "Jumping", "Agility", "HeadingAccuracy")){
   boxplot(PDeurlat[,i] ~ Region, data = PDeurlat, col = 'yellow', main=i, ylab = "")
   #calculate means using the tapply function - could also use the by function
   means <- tapply(PDeurlat[,i], PDeurlat$Region,mean)
