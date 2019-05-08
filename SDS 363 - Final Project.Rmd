@@ -268,9 +268,9 @@ SPDoff
 #### run k-means with offensive players
 ```{r}
 fviz_nbclust(SPDoff, kmeans, method = "silhouette") +
-labs(title= "Optimal Cluster Number for Strikers - Silhouette Method") 
+labs(title= "Optimal Cluster Number for Offensive Players - Silhouette Method") 
 fviz_nbclust(SPDoff, kmeans, method = "wss") +
-labs(title= "Optimal Cluster Number for Strikers - WSS Method") +
+labs(title= "Optimal Cluster Number for Offensive Players - WSS Method") +
 geom_vline(xintercept = 3 , linetype = 2)
 
 nboff <- NbClust(SPDoff, distance = "euclidean", min.nc = 2,
@@ -300,9 +300,9 @@ marrangeGrob(grobs=list(offp2, offp3, offp4, offp5), ncol=2, nrow = 2)
 #### run k-means with defensive players
 ```{r}
 fviz_nbclust(SPDdef, kmeans, method = "silhouette") +
-labs(title= "Optimal Cluster Number for Center Backs - Silhouette Method") 
+labs(title= "Optimal Cluster Number for Defensive Players - Silhouette Method") 
 fviz_nbclust(SPDdef, kmeans, method = "wss") +
-labs(title= "Optimal Cluster Number for Center Backs - WSS Method") +
+labs(title= "Optimal Cluster Number for Defensive Players - WSS Method") +
 geom_vline(xintercept = 3 , linetype = 2)
 
 nboff <- NbClust(SPDoff, distance = "euclidean", min.nc = 2,
@@ -332,9 +332,9 @@ marrangeGrob(grobs=list(defp2, defp3, defp4, defp5), ncol=2, nrow = 2)
 #### run k-means with center midfielder players
 ```{r}
 fviz_nbclust(SPDmid, kmeans, method = "silhouette") +
-labs(title= "Optimal Cluster Number for Center Midfielders - Silhouette Method") 
+labs(title= "Optimal Cluster Number for Center Midfield Players - Silhouette Method") 
 fviz_nbclust(SPDmid, kmeans, method = "wss") +
-labs(title= "Optimal Cluster Number for Center Midfielders - WSS Method") +
+labs(title= "Optimal Cluster Number for Center Midfield Players - WSS Method") +
 geom_vline(xintercept = 3 , linetype = 2)
 
 nboff <- NbClust(SPDoff, distance = "euclidean", min.nc = 2,
