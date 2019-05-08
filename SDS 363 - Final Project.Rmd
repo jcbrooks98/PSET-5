@@ -446,6 +446,7 @@ mod2 <- lm(as.matrix(PDeurlat[,c("Acceleration", "Stamina")]) ~ PDeurlat$Region 
 
 summary(mod2)
 ```
+*From this generalized linear model we are able to see that InternationalReputation and Wage are potentially statistically significant predictors of the continuous variable Acceleration while RegionLatinAmerica and Wage are potentially statistically significant predictors of the continuous variable Stamina.* [double check this please to make sure analysis is correct]
 
 ```{r}
 source("http://www.reuningscherer.net/STAT660/R/CSQPlot.r.txt")
