@@ -495,8 +495,6 @@ midp5 <- fviz_cluster(midk5, geom = "point",  data = SPDmid) +
 marrangeGrob(grobs=list(midp2, midp3, midp4, midp5), ncol=2, nrow = 2)
 ```
 
-[insert analysis here]
-
 ###MANOVA
 
 #isolate european and latin american subgroups, and make new categorical variable
@@ -568,7 +566,6 @@ summary.aov(mod0)
 summary.manova(mod0)
 summary.manova(mod0, test="Wilks")
 ```
-*The one way MANOVA suggests that Region is a statistically significant predictor for Acceleration, Stamina, SprintSpeed, Balance, Agility, HeadingAccuracy. However, the one way MANOVA suggests that Region is NOT a statistically significant predictor for jumping, which we found to be particularly interesting given the interaction plot that we observed. This may be a result of a small sampling size issue, though we are not entirely certain why Region is a statistically significant predictor for most athletic attributes, but not jumping.*
 
 #### Two-way Manova
 ```{r}
@@ -578,30 +575,12 @@ summary.aov(mod1)
 summary.manova(mod1)
 summary.manova(mod1, test="Wilks")
 ```
-*The Two-Way MANOVA suggests that both Region and International Reputation are both statistically significant predictors for Acceleration, Stamina, SprintSpeed, Balance, Agility, HeadingAccuracy. In addition, the interaction of Region and International Reputation was a statistically significant predictor for HeadingAccuracy. What is curious is that International Reputation was a statistically significant predictor for Jumping, but once again, Region proved not to be a statistically significant predictor for Jumping.*
 
-#### Examining how response variables interact
-```{r}
-plot(PDeurlat$Balance, PDeurlat$Acceleration, main = 'Balance ~ Acceleration')
-plot(PDeurlat$Stamina, PDeurlat$Acceleration, main = 'Stamina ~ Acceleration')
-```
-*Acceleration seems to have a relatively strong, positive, linear relationship with both SprintSpeed and Stamina. However, it is almost indiscernable given that Wage is so heavily left skewed (SHOULD WE MAKE A TRANSFORMATION TO WAGE TO HELP THIS???)*
-
-# GLM with wage variable
-```{r}
-mod2 <- lm(as.matrix(PDeurlat[,c("Acceleration", "Stamina", "Balance", "HeadingAccuracy")]) ~ PDeurlat$Region + PDeurlat$InternationalReputation + PDeurlat$Wage +  PDeurlat$Region*PDeurlat$InternationalReputation) 
-
-summary(mod2)
-```
-*From this generalized linear model we are able to see that InternationalReputation and Wage are potentially statistically significant predictors of the continuous variable Acceleration while RegionLatinAmerica and Wage are potentially statistically significant predictors of the continuous variable Stamina.* [double check this please to make sure analysis is correct]
+*Upon actually running the regression, we found that the one way MANOVA suggests that Region is a statistically significant predictor for both Acceleration, Stamina, SprintSpeed, and HeadingAccuracy. The Two-Way MANOVA suggests that both Region and International Reputation are both statistically significant predictors for Acceleration, Stamina, SprintSpeed, and HeadingAccuracy.*
 
 ```{r}
 source("http://www.reuningscherer.net/STAT660/R/CSQPlot.r.txt")
 CSQPlot(mod1$residuals, label="MANOVA Residuals")
 CSQPlot(mod2$residuals, label="GLM Residuals")
 ```
-[insert analysis here]
 
-#Conclusions and Discussion
-
-#Points for further analysis
