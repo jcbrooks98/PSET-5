@@ -212,7 +212,7 @@ sum(rep(1,len)[abs(resid_paf[upper.tri(resid_paf)])>0.05])/len
 
 *A player's overall score seems to be most closely associated with factor one, which we determined to be ability to maintain solid possession of the ball, attack fiercely, and capitalize off of opportunity. Thus, we are able to determine that when EA Sports Analysts are subjectively determining the x-factor, it is very likely that players that are able to attack the ball well and capitalize often will be given a boost when determining their overall rating in the game.*
 
-#### Getting a sense of how many player clusters
+#### Getting a sense of how many player clusters there might be generally
 ```{r}
 rowNames <- PD[,3]
 PD[,c("X", "ID", "Name", "Nationality", "Club", "PreferredFoot", "BodyType", "Position", "InternationalReputatiton", "WeakFoot", "SkillMoves")] <- list(NULL)
@@ -346,7 +346,7 @@ hclus_eval(PD_sampled, dist_m = 'euclidean', clus_m = 'ward', plot_op = T)
 *The steepest portions of the RMSSTD line is before the 5 cluster mark. The RSQ line could be said to flatten out at the 4 or 5 cluster mark. The SPRSQ line clearly flattens a lot after the 3 cluster mark. All in all, we think 4 clusters is good choice from this plot. *  
 
 
-###K-Means
+###K-Means and focusing in on our target questions
 ```{r}
 #read data
 PD <- read.csv("data.csv", header=TRUE, stringsAsFactors = FALSE)
@@ -561,7 +561,7 @@ summary.manova(mod1, test="Wilks")
 ```
 *The Two-Way MANOVA suggests that both Region and International Reputation are both statistically significant predictors for Acceleration, Stamina, SprintSpeed, Balance, Agility, HeadingAccuracy. In addition, the interaction of Region and International Reputation was a statistically significant predictor for HeadingAccuracy. What is curious is that International Reputation was a statistically significant predictor for Jumping, but once again, Region proved not to be a statistically significant predictor for Jumping.*
 
-#### Examining how skillMoves interacts with our response variables
+#### Examining how response variables interact
 ```{r}
 #plot(PDeurlat$SprintSpeed, PDeurlat$Acceleration, main = 'Sprint Speed ~ Acceleration')
 logsprint <- log(PDeurlat$SprintSpeed)
@@ -573,7 +573,7 @@ plot(logstamina, PDeurlat$Acceleration, main = 'Log of Stamina ~ Acceleration')
 ```
 *Acceleration seems to have a relatively strong, positive, linear relationship with both SprintSpeed and Stamina. However, it is almost indiscernable given that Wage is so heavily left skewed (SHOULD WE MAKE A TRANSFORMATION TO WAGE TO HELP THIS???)*
 
-# GLM with skillMoves variable
+# GLM with wage variable
 ```{r}
 mod2 <- lm(as.matrix(PDeurlat[,c("Acceleration", "Stamina")]) ~ PDeurlat$Region + PDeurlat$InternationalReputation + PDeurlat$Wage +  PDeurlat$Region*PDeurlat$InternationalReputation) 
 
