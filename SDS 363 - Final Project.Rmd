@@ -112,10 +112,6 @@ data3 <- data[,(2*(length(data)/3)):length(data)]
 corrplot(cor(data1),method = "ellipse", order="hclust", tl.col = "black", tl.cex=.8)
 corrplot(cor(data2),method = "ellipse", order="hclust", tl.col = "black", tl.cex=.8)
 corrplot(cor(data3),method = "ellipse", order="hclust", tl.col = "black", tl.cex=.8)
-
-#chart.Correlation(data1, histogram=TRUE, pch=19)
-#chart.Correlation(data2, histogram=TRUE, pch=19)
-#chart.Correlation(data3, histogram=TRUE, pch=19)
 ```
 We see many highly correlated predictors. There are strong correlations between many sorts of factors, all of which make a great deal of sense when examined individually. Volleying (kicking the ball out of the air and shooting it at the goal) is highly correlated with finishing (general ability to kick the ball into the goal); finishing ability is very negatively correlated with defensive positional ratings (like center back [CB]); tackling ability (the ability to take the ball away from an opposing player) is highly correlated with ability to intercept the ball (to take possesion of a pass intended for an opposing player). 
 
@@ -143,11 +139,11 @@ plot(fit, type="lines", main="Scree Plot for Factor Analysis of FIFA Data",col="
 #elbow at 3rd component. We will aim for 3 latent factors in our factor analysis. 
 ```
 
-Below is the actual Factor Analysis Test
+Below is the actual Factor Analysis Test using Maximum Likelihood with a Varimax Rotation
 ```{r}
 #had to increase the lower bound from default 0.005 in order to allow the solution to converge 
 fact_ml <- factanal(data, factors=3, rotation="varimax", fm="ml", lower = 0.02)
-fact_ml
+fact_ml$PVAL
 ```
 
 Loading plot for first two factors
@@ -174,7 +170,40 @@ RMSR_ml
 #get proportion of residuals greater than 0.05 in absolute value
 sum(rep(1,len)[abs(resid_ml[upper.tri(resid_ml)])>0.05])/len
 ```
+
+For the sake of comparison, we have also included Factor Analysis using PAF with a varimax rotation.
+```{r}
+#this uses the fa() function in the psych package.  Note that this fails with only 2 factors
+fact_paf <- factanal(data, factors=3, rotation="varimax", fm="pa", lower = 0.02)
+fact_paf$PVAL
+```
+
+Loading plot for first two factors
+```{r}
+plot(fact_paf$loadings, pch=18, col='red')
+abline(h=0)
+abline(v=0)
+text(fact_paf$loadings, labels=names(data),cex=0.8)
+```
+
+Correlation matrix analysis
+```{r}
+#get reproduced correlation matrix
+repro_paf <- fact_paf$loadings%*%t(fact_paf$loadings)
+#residual correlation matrix
+resid_paf <- cor(data)-repro_paf
+round(resid_paf,2)
+#get root-mean squared residuals - already provided in output actually
+len <- length(resid_paf[upper.tri(resid_paf)])
+RMSR_paf <- sqrt(sum(resid_paf[upper.tri(resid_paf)]^2)/len)
+RMSR_paf
+#get proportion of residuals greater than 0.05 in absolute value
+sum(rep(1,len)[abs(resid_paf[upper.tri(resid_paf)])>0.05])/len
+```
+
 [insert analysis here]
+
+
 
 
 *K-Means*
