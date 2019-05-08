@@ -377,43 +377,80 @@ PDeurlat <- PD[ which(PD$Nationality == "Russia" | PD$Nationality == "Germany" |
 
 Region <- ifelse(PDeurlat$Nationality == "Russia" | PDeurlat$Nationality == "Germany" | PDeurlat$Nationality == "England" | PDeurlat$Nationality == "France" | PDeurlat$Nationality == "Italy" | PDeurlat$Nationality == "Spain" | PDeurlat$Nationality == "Ukraine" | PDeurlat$Nationality == "Poland" | PDeurlat$Nationality == "Romania" | PDeurlat$Nationality == "Netherlands","Europe","LatinAmerica")
 
-PD$Region <- Region
+PDeurlat$Region <- Region
 
 ```
 
 #make interaction plots
 ```{r}
 
-interaction.plot(PD$Region,PD$InternationalReputation,PD$HeadingAccuracy, lwd=3,col=c("red","blue","black","green","purple"),trace.label = "International Reputation",xlab="Region",ylab="Mean of Heading Accuracy",main="Interaction Plot for Heading Accuracy", legend=FALSE)
+interaction.plot(PDeurlat$Region,PDeurlat$InternationalReputation,PDeurlat$HeadingAccuracy, lwd=3,col=c("red","blue","black","green","purple"),trace.label = "International Reputation",xlab="Region",ylab="Mean of Heading Accuracy",main="Interaction Plot for Heading Accuracy", legend=FALSE)
 legend("topleft", c("Poor","Low","Medium","Fair","Good"),bty="n",lty=2,lwd=3,col=c("red","blue","black","green","purple"), title="International Reputation",inset = 0, cex=.8,y.intersp
 =.7, horiz = TRUE)
 
-interaction.plot(PD$Region,PD$InternationalReputation,PD$Agility,lwd=3,col=c("red","blue","black","green","purple"),trace.label="International Reputation",xlab="Region",ylab="Mean of Agility",main="Interaction Plot for Agility",legend=FALSE)
+interaction.plot(PDeurlat$Region,PDeurlat$InternationalReputation,PDeurlat$Agility,lwd=3,col=c("red","blue","black","green","purple"),trace.label="International Reputation",xlab="Region",ylab="Mean of Agility",main="Interaction Plot for Agility",legend=FALSE)
 legend("topleft", c("Poor","Low","Medium","Fair","Good"),bty="n",lty=2,lwd=3,col=c("red","blue","black","green","purple"), title="International Reputationt",inset = 0, cex=.8,y.intersp
 =.7, horiz = TRUE)
 
-interaction.plot(PD$Region,PD$InternationalReputation,PD$Stamina, lwd=3,col=c("red","blue","black","green","purple"),trace.label = "International Reputation",xlab="Region",ylab="Mean of Stamina",main="Interaction Plot for Stamina", legend=FALSE)
+interaction.plot(PDeurlat$Region,PDeurlat$InternationalReputation,PDeurlat$Stamina, lwd=3,col=c("red","blue","black","green","purple"),trace.label = "International Reputation",xlab="Region",ylab="Mean of Stamina",main="Interaction Plot for Stamina", legend=FALSE)
 legend("topleft", c("Poor","Low","Medium","Fair","Good"),bty="n",lty=2,lwd=3,col=c("red","blue","black","green","purple"), title="International Reputation",inset = 0, cex=.8,y.intersp
 =.7, horiz = TRUE)
 
-interaction.plot(PD$Region,PD$InternationalReputation,PD$Jumping, lwd=3,col=c("red","blue","black","green","purple"),trace.label = "International Reputation",xlab="Region",ylab="Mean of Jumping",main="Interaction Plot for Jumping", legend=FALSE)
+interaction.plot(PDeurlat$Region,PDeurlat$InternationalReputation,PDeurlat$Jumping, lwd=3,col=c("red","blue","black","green","purple"),trace.label = "International Reputation",xlab="Region",ylab="Mean of Jumping",main="Interaction Plot for Jumping", legend=FALSE)
 legend("topleft", c("Poor","Low","Medium","Fair","Good"),bty="n",lty=2,lwd=3,col=c("red","blue","black","green","purple"), title="International Reputation",inset = 0, cex=.8,y.intersp
 =.7, horiz = TRUE)
 
-interaction.plot(PD$Region,PD$InternationalReputation,PD$Balance, lwd=3,col=c("red","blue","black","green","purple"),trace.label = "International Reputation",xlab="Region",ylab="Mean of Balance",main="Interaction Plot for Balance", legend=FALSE)
+interaction.plot(PDeurlat$Region,PDeurlat$InternationalReputation,PDeurlat$Balance, lwd=3,col=c("red","blue","black","green","purple"),trace.label = "International Reputation",xlab="Region",ylab="Mean of Balance",main="Interaction Plot for Balance", legend=FALSE)
 legend("topleft", c("Poor","Low","Medium","Fair","Good"),bty="n",lty=2,lwd=3,col=c("red","blue","black","green","purple"), title="International Reputation",inset = 0, cex=.8,y.intersp
 =.7, horiz = TRUE)
 
-interaction.plot(PD$Region,PD$InternationalReputation,PD$SprintSpeed, lwd=3,col=c("red","blue","black","green","purple"),trace.label = "International Reputation",xlab="Region",ylab="Mean of Sprint Speed",main="Interaction Plot for Sprint Speed", legend=FALSE)
+interaction.plot(PDeurlat$Region,PDeurlat$InternationalReputation,PDeurlat$SprintSpeed, lwd=3,col=c("red","blue","black","green","purple"),trace.label = "International Reputation",xlab="Region",ylab="Mean of Sprint Speed",main="Interaction Plot for Sprint Speed", legend=FALSE)
 legend("topleft", c("Poor","Low","Medium","Fair","Good"),bty="n",lty=2,lwd=3,col=c("red","blue","black","green","purple"), title="International Reputation",inset = 0, cex=.8,y.intersp
 =.7, horiz = TRUE)
 
-interaction.plot(PD$Region,PD$InternationalReputation,PD$Acceleration, lwd=3,col=c("red","blue","black","green","purple"),trace.label = "International Reputation",xlab="Region",ylab="Mean of Acceleration",main="Interaction Plot for Acceleration", legend=FALSE)
+interaction.plot(PDeurlat$Region,PDeurlat$InternationalReputation,PDeurlat$Acceleration, lwd=3,col=c("red","blue","black","green","purple"),trace.label = "International Reputation",xlab="Region",ylab="Mean of Acceleration",main="Interaction Plot for Acceleration", legend=FALSE)
 legend("topleft", c("Poor","Low","Medium","Fair","Good"),bty="n",lty=2,lwd=3,col=c("red","blue","black","green","purple"), title="International Reputation",inset = 0, cex=.8,y.intersp
 =.7, horiz = TRUE)
 ```
 These interaction plots show promise for MANOVA or some sort of generalized linear model. 
 
+#### One-way Manova
+```{r}
+mod0 <- manova(as.matrix(PDeurlat[,c("Acceleration", "Stamina")]) ~ PDeurlat$Region)
+summary.aov(mod0)
+summary.manova(mod0)
+summary.manova(mod0, test="Wilks")
+```
+
+#### Two-way Manova
+```{r}
+mod1 <- manova(as.matrix(PDeurlat[,c("Acceleration", "Stamina")]) ~ PDeurlat$Region + PDeurlat$InternationalReputation + PDeurlat$Region*PDeurlat$InternationalReputation) 
+
+summary.aov(mod1)
+summary.manova(mod1)
+summary.manova(mod1, test="Wilks")
+```
+
+#### Examining how skillMoves interacts with our response variables
+```{r}
+plot(PDeurlat$Wage, PDeurlat$Acceleration, main = 'Wage ~ Acceleration')
+plot(PDeurlat$Wage, PDeurlat$Stamina, main = 'Wage ~ Stamina')
+```
+# GLM with skillMoves variable
+```{r}
+mod2 <- lm(as.matrix(PDeurlat[,c("Acceleration", "Stamina")]) ~ PDeurlat$Region + PDeurlat$InternationalReputation + PDeurlat$Wage +  PDeurlat$Region*PDeurlat$InternationalReputation) 
+```
+
+```{r}
+summary(mod2)
+```
+
+```{r}
+source("http://www.reuningscherer.net/STAT660/R/CSQPlot.r.txt")
+CSQPlot(mod1$residuals, label="MANOVA Residuals")
+#maybe this should be changed to the GLM residuals instead of MANOVA? possibly just add GLM results?
+CSQPlot(mod2$residuals, label="GLM Residuals")
+```
 [insert analysis here]
 
 #Conclusions and Discussion
