@@ -111,6 +111,11 @@ data3 <- data[,(2*(length(data)/3)):length(data)]
 corrplot(cor(data1),method = "ellipse", order="hclust", tl.col = "black", tl.cex=.8)
 corrplot(cor(data2),method = "ellipse", order="hclust", tl.col = "black", tl.cex=.8)
 corrplot(cor(data3),method = "ellipse", order="hclust", tl.col = "black", tl.cex=.8)
+
+# chart.Correlation(data1, histogram=TRUE, pch=19)
+# chart.Correlation(data2, histogram=TRUE, pch=19)
+# chart.Correlation(data3, histogram=TRUE, pch=19)
+
 ```
 *We see many highly correlated predictors. There are strong correlations between many sorts of factors, all of which make a great deal of sense when examined individually. Volleying (kicking the ball out of the air and shooting it at the goal) is highly correlated with finishing (general ability to kick the ball into the goal); finishing ability is very negatively correlated with defensive positional ratings (like center back [CB]); tackling ability (the ability to take the ball away from an opposing player) is highly correlated with ability to intercept the ball (to take possesion of a pass intended for an opposing player).*
 
@@ -342,6 +347,7 @@ nboff <- NbClust(SPDoff, distance = "euclidean", min.nc = 2,
 
 fviz_nbclust(nboff) + theme_minimal()
 ```
+
 
 ```{r}
 midk2 <- kmeans(SPDmid, centers = 2)
