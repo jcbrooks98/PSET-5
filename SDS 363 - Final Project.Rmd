@@ -144,11 +144,9 @@ We ran PCA using the covariance matrix because the scales of the variables were 
 
 Below is the actual Factor Analysis Test using Maximum Likelihood with a Varimax Rotation
 ```{r}
-fact_ml <- fa(datamat, nfactors = 3, rotate = "varimax", fm="ml")
+fact_ml <- fa(datamat, nfactors = 3, SMC = FALSE, rotate = "varimax", fm="ml")
 fact_ml$PVAL
-```
 
-```{r}
 #Loading plot for first two factors using Maximum Likelihood
 plot(fact_ml$loadings, pch=18, col='red', main="ML Loading Plot for First Two Factors",xlab="1st Factor: Ball Control", ylab="2nd Factor: Ball Pressure")
 abline(h=0)
@@ -178,6 +176,7 @@ For the sake of comparison, we have also included Factor Analysis using Principa
 #this uses the fa() function in the psych package.  Note that this fails with only 2 factors
 fact_paf <- fa(datamat, nfactors = 3, rotate = "varimax", SMC = FALSE, fm="pa")
 fact_paf$PVAL
+fact_paf
 
 #Loading plot for first two factors Principal Axis Factoring
 plot(fact_paf$loadings, pch=18, col='red', main="PAF Loading Plot for First Two Factors",xlab="1st Factor: Ball Control", ylab="2nd Factor: Ball Pressure")
@@ -203,7 +202,11 @@ RMSR_paf <- sqrt(sum(resid_paf[upper.tri(resid_paf)]^2)/len)
 sum(rep(1,len)[abs(resid_paf[upper.tri(resid_paf)])>0.05])/len
 ```
 
-Of the two factor analyses methods used, the maximum likelihood extraction method with varimax rotation produced a lower RMSR value and also had the smaller proportion of residuals greater than .05. As such, the following analyses will be based off of the maximum likelihood method (the principal axis factoring method is meant only to be used for comparison's sake, and no conclusions will be made from this method). 
+Of the two factor analyses methods used, the principal axis factoring extraction method with varimax rotation produced a lower RMSR value (0.14286 vs 0.15986) and also had the smaller proportion of residuals greater than .05. As such, the following analyses will be based off of the principal axis factoring method (the maximum likelihood method is meant only to be used for comparison's sake, and no conclusions will be made from this method). 
+
+The first latent factor seems to be about handling when in posession of the ball (ball control), and ability to act as an effective attacker. The second latent factor seems to be about ability to act as an effective defender (ball pressure). The third latent factor expresses variation on skills that are general player attributes, such as height, weight, and other characteristics marking athleticism — there are positive values for acceleration, sprint speed and finishing, but negative values for height and weight. Together, these three factors account for 68% of the variance in the data. 
+
+A player's overall score seems to be most closely associated with factor one, which we determined to be ability to maintain solid possession of the ball, attack fiercely, and capitalize off of opportunity. Thus, we are able to determine that when EA Sports Analysts are subjectively determining the x-factor, it is very likely that players that are able to attack the ball well and capitalize often will be given a boost when determining their overall rating in the game. 
 
 *K-Means*
 
