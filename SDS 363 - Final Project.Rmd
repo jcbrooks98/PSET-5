@@ -212,6 +212,63 @@ sum(rep(1,len)[abs(resid_paf[upper.tri(resid_paf)])>0.05])/len
 
 *A player's overall score seems to be most closely associated with factor one, which we determined to be ability to maintain solid possession of the ball, attack fiercely, and capitalize off of opportunity. Thus, we are able to determine that when EA Sports Analysts are subjectively determining the x-factor, it is very likely that players that are able to attack the ball well and capitalize often will be given a boost when determining their overall rating in the game.*
 
+#### Getting a sense of how many player clusters
+```{r}
+rowNames <- PD[,3]
+PD[,c("X", "ID", "Name", "Nationality", "Club", "PreferredFoot", "BodyType", "Position", "InternationalReputatiton", "WeakFoot", "SkillMoves")] <- list(NULL)
+PD <- scale(PD)
+
+# The following lines check the stddev of our variables to see if they're fit for cluster analysis
+PD_norm <- as.data.frame(apply(PD, 2, function(x) (x - min(x))/(max(x)-min(x))))
+
+# get stddev of vars
+PD_stddev <- round(sqrt(apply(PD_norm,2,var)),2)
+
+min(PD_stddev)
+max(PD_stddev)
+
+#since we have too many observations, we have chosen to sample 200 players so the information fits into a dendrogram
+rownumbers<-sample.int(16122,size=200)
+PD_sampled <- PD[rownumbers,]
+rowNames <- rowNames[rownumbers]
+```
+
+*The stdev ranges between .04 and .24. The columns on the lower end of standard deviation could be removed, but we decided that .04 is acceptable.*
+
+```{r}
+#Get distance matrix (METHOD 1)
+PD.dist.E <- dist(PD_sampled, method="euclidean") #euclidean distance matrix
+PD.clust.E <- hclust(PD.dist.E, method = "complete") #cluster analysis complete linkages
+PD.clustAVG.E <- hclust(PD.dist.E, method = "average") #cluster analysis average linkages  
+
+
+#Get distance matrix (METHOD 2)
+PD.dist.M <- dist(PD_sampled, method="manhattan") #manhattan distance matrix
+PD.clust.M <- hclust(PD.dist.M, method = "complete") #cluster analysis complete linkages
+PD.clustAVG.M <- hclust(PD.dist.M, method = "average") #cluster analysis average linkages  
+
+#make dendrogram (euclidean and complete linkages)
+PD.clust.E$labels <- as.character(rowNames[rownumbers])
+plot(PD.clust.E, xlab="",ylab="Distance",main="Clustering for Fifa Players (Complete Linkages | Euclidean Distance)")  
+
+
+#make dendrogram (euclidean and average linkages)
+PD.clustAVG.E$labels <- as.character(rowNames[rownumbers])
+plot(PD.clustAVG.E, xlab="",ylab="Distance",main="Clustering for Fifa Players (Average Linkages | Euclidean Distance)")  
+
+
+#make dendrogram (manhattan and complete linkages)
+PD.clust.M$labels <- as.character(rowNames[rownumbers])
+plot(PD.clust.M, xlab="",ylab="Distance",main="Clustering for Fifa Players (Complete Linkages | Mantahhan Distance)")  
+
+
+#make dendrogram (manhattan and average linkages)
+PD.clustAVG.M$labels <- as.character(rowNames[rownumbers])
+plot(PD.clustAVG.M, xlab="",ylab="Distance",main="Clustering for Fifa Players (Average Linkages | Manhattan Distance)")
+```
+*The four combinations of distance and agglomeration methods produce slightly varied results. Generally, the trees taken together suggest that somewhere between 3-5 groups makes the most sense. With our complete linkage clustering method, interestingly the clusters aren’t as chained as expected with this clustering method. The combination of complete linkage with manhattan distance produced the most clear clusters.* 
+
+
 ###K-Means
 ```{r}
 #read data
@@ -231,7 +288,6 @@ PD[,7] <- as.numeric(PD[,7])
 #sapply(1:ncol(PD), function(a) {class(PD[,a])})
 
 SPD <- scale(PD)
-
 
 
 #get defensive subroup
