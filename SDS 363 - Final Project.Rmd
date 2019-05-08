@@ -549,10 +549,11 @@ CSQPlot(PDeurlat[PDeurlat$Region == "LatinAmerica", c("Acceleration", "Stamina")
 ```
 
 ```{r}
+# Boxplots of mean score by region for each response variable
 #Make labels vector
 responsevec <- c("Acceleration", "Stamina")
 for (i in c("Acceleration", "Stamina")){
-  boxplot(PDeurlat[,i] ~ Region, data = PDeurlat, col = 'yellow', ylab = "")
+  boxplot(PDeurlat[,i] ~ Region, data = PDeurlat, col = 'yellow', main=i, ylab = "")
   #calculate means using the tapply function - could also use the by function
   means <- tapply(PDeurlat[,i], PDeurlat$Region,mean)
   points(means, col = "red", pch = 19, cex = 1.2)
