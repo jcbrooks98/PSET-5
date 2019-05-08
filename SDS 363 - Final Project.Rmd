@@ -412,7 +412,7 @@ interaction.plot(PDeurlat$Region,PDeurlat$InternationalReputation,PDeurlat$Accel
 legend("topleft", c("Poor","Low","Medium","Fair","Good"),bty="n",lty=2,lwd=3,col=c("red","blue","black","green","purple"), title="International Reputation",inset = 0, cex=.8,y.intersp
 =.7, horiz = TRUE)
 ```
-These interaction plots show promise for MANOVA or some sort of generalized linear model. 
+*These interaction plots show promise for MANOVA or some sort of generalized linear model.*
 
 #### One-way Manova
 ```{r}
@@ -421,6 +421,7 @@ summary.aov(mod0)
 summary.manova(mod0)
 summary.manova(mod0, test="Wilks")
 ```
+*The one way MANOVA suggests that Region is a statistically significant predictor for both Acceleration and Stamina*
 
 #### Two-way Manova
 ```{r}
@@ -430,18 +431,18 @@ summary.aov(mod1)
 summary.manova(mod1)
 summary.manova(mod1, test="Wilks")
 ```
+*The Two-Way MANOVA suggests that both Region and International Reputation (but not the interaction of the two) are statistically significant predictors for Acceleration and Stamina, respectively.*
 
 #### Examining how skillMoves interacts with our response variables
 ```{r}
 plot(PDeurlat$Wage, PDeurlat$Acceleration, main = 'Wage ~ Acceleration')
 plot(PDeurlat$Wage, PDeurlat$Stamina, main = 'Wage ~ Stamina')
 ```
+
 # GLM with skillMoves variable
 ```{r}
 mod2 <- lm(as.matrix(PDeurlat[,c("Acceleration", "Stamina")]) ~ PDeurlat$Region + PDeurlat$InternationalReputation + PDeurlat$Wage +  PDeurlat$Region*PDeurlat$InternationalReputation) 
-```
 
-```{r}
 summary(mod2)
 ```
 
