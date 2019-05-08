@@ -369,7 +369,7 @@ marrangeGrob(grobs=list(midp2, midp3, midp4, midp5), ncol=2, nrow = 2)
 
 [insert analysis here]
 
-*MANOVA*
+###MANOVA
 
 #isolate european and latin american subgroups, and make new categorical variable
 ```{r}
