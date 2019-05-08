@@ -430,11 +430,11 @@ summary.manova(mod1, test="Wilks")
 
 #### Examining how skillMoves interacts with our response variables
 ```{r}
-plot(PDeurlat$Wage, PDeurlat$Acceleration, main = 'Wage ~ Acceleration')
-logwage <- log(PDeurlat$Wage)
-plot(logwage, PDeurlat$Acceleration, main = 'Log of Wage ~ Acceleration')
+#plot(PDeurlat$SprintSpeed, PDeurlat$Acceleration, main = 'Sprint Speed ~ Acceleration')
+logsprint <- log(PDeurlat$SprintSpeed)
+plot(logsprint, PDeurlat$Acceleration, main = 'Log of Sprint Speed ~ Acceleration')
 
-plot(PDeurlat$Wage, PDeurlat$Stamina, main = 'Stamina ~ Acceleration')
+#plot(PDeurlat$Stamina, PDeurlat$Acceleration, main = 'Stamina ~ Acceleration')
 logstamina <- log(PDeurlat$Stamina)
 plot(logstamina, PDeurlat$Acceleration, main = 'Log of Stamina ~ Acceleration')
 ```
