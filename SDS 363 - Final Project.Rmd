@@ -305,10 +305,10 @@ fviz_nbclust(SPDdef, kmeans, method = "wss") +
 labs(title= "Optimal Cluster Number for Defensive Players - WSS Method") +
 geom_vline(xintercept = 3 , linetype = 2)
 
-nboff <- NbClust(SPDoff, distance = "euclidean", min.nc = 2,
+nbdef <- NbClust(SPDdef, distance = "euclidean", min.nc = 2,
         max.nc = 10, method = "complete", index ="all")
 
-fviz_nbclust(nboff) + theme_minimal()
+fviz_nbclust(nbdef) + theme_minimal()
 ```
 
 ```{r}
@@ -337,10 +337,10 @@ fviz_nbclust(SPDmid, kmeans, method = "wss") +
 labs(title= "Optimal Cluster Number for Center Midfield Players - WSS Method") +
 geom_vline(xintercept = 3 , linetype = 2)
 
-nboff <- NbClust(SPDoff, distance = "euclidean", min.nc = 2,
+nbmid <- NbClust(SPDmid, distance = "euclidean", min.nc = 2,
         max.nc = 10, method = "complete", index ="all")
 
-fviz_nbclust(nboff) + theme_minimal()
+fviz_nbclust(nbmid) + theme_minimal()
 ```
 
 
