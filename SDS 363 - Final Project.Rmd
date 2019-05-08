@@ -79,8 +79,6 @@ PDNames <- colnames(PD)
 for (col in boxplotCols){
   boxplot(PD[, col], main=PDNames[col])
 }
-
-# Correlation matrix shown in latter part
 ```
 
 
@@ -103,11 +101,6 @@ data3 <- data[,(2*(length(data)/3)):length(data)]
 corrplot(cor(data1),method = "ellipse", order="hclust", tl.col = "black", tl.cex=.8)
 corrplot(cor(data2),method = "ellipse", order="hclust", tl.col = "black", tl.cex=.8)
 corrplot(cor(data3),method = "ellipse", order="hclust", tl.col = "black", tl.cex=.8)
-
-# chart.Correlation(data1, histogram=TRUE, pch=19)
-# chart.Correlation(data2, histogram=TRUE, pch=19)
-# chart.Correlation(data3, histogram=TRUE, pch=19)
-
 ```
 *We see many highly correlated predictors. There are strong correlations between many sorts of factors, all of which make a great deal of sense when examined individually. Volleying (kicking the ball out of the air and shooting it at the goal) is highly correlated with finishing (general ability to kick the ball into the goal); finishing ability is very negatively correlated with defensive positional ratings (like center back [CB]); tackling ability (the ability to take the ball away from an opposing player) is highly correlated with ability to intercept the ball (to take possesion of a pass intended for an opposing player).*
 
@@ -120,7 +113,7 @@ corrplot(cor(data3),method = "ellipse", order="hclust", tl.col = "black", tl.cex
 datamat <- data.matrix(whole)
 output1 <- paf(datamat, eigcrit=1, convcrit=.001)
 print(output1$KMO)
-#summary(output1)
+summary(output1)
 ```
 *In conducting factor analysis for our data, we first had to determine the suitability by computing KMO (Kaiser-Meyer-Olkin). Further, a test such as Principal Component Analysis (PCA) must be conducted to determine a number of latent factors that we are looking for, and as such, we will compute PCA on the covariance matrix because the variable scales we utilized are similar (ranging from 0-100). The selected indicators give us a Kaiser-Meyer-Olkin output of 0.74211, which is acceptable. We can proceed with Factor Analysis.*
 
@@ -154,14 +147,12 @@ text(fact_ml$loadings,labels=names(data),cex=0.8)
 repro_ml <- fact_ml$loadings%*%t(fact_ml$loadings)
 #residual correlation matrix
 resid_ml <- cor(data)-repro_ml
-#round(resid_ml,2)
-#omitted for the sake of succinctness
+round(resid_ml,2)
 
 #get root-mean squared residuals - already provided in output actually
 len <- length(resid_ml[upper.tri(resid_ml)])
 RMSR_ml <- sqrt(sum(resid_ml[upper.tri(resid_ml)]^2)/len)
-#RMSR_ml
-#omitted for the sake of succinctness
+RMSR_ml
 
 #get proportion of residuals greater than 0.05 in absolute value
 sum(rep(1,len)[abs(resid_ml[upper.tri(resid_ml)])>0.05])/len
@@ -185,14 +176,12 @@ text(fact_paf$loadings, labels=names(data),cex=0.8)
 repro_paf <- fact_paf$loadings%*%t(fact_paf$loadings)
 #residual correlation matrix
 resid_paf <- cor(data)-repro_paf
-#round(resid_paf,2)
-#omitted for the sake of succinctness
+round(resid_paf,2)
 
 #get root-mean squared residuals - already provided in output actually
 len <- length(resid_paf[upper.tri(resid_paf)])
 RMSR_paf <- sqrt(sum(resid_paf[upper.tri(resid_paf)]^2)/len)
-#RMSR_paf
-#omitted for the sake of succinctness
+RMSR_paf
 
 #get proportion of residuals greater than 0.05 in absolute value
 sum(rep(1,len)[abs(resid_paf[upper.tri(resid_paf)])>0.05])/len
